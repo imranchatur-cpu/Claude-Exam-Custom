@@ -6,7 +6,7 @@ Practice material built from Imran's vault miss profile and the CCAR-F exam guid
 
 ## Mock Exam 3 — Sat 16 Aug 2026
 
-**[Open exam (Claude artifact)](https://claude.ai/code/artifact/0dae1bb5-b5d0-4bc1-940b-46c77dc021ec)**
+**[Open exam — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/)** · [Claude artifact (backup)](https://claude.ai/code/artifact/0dae1bb5-b5d0-4bc1-940b-46c77dc021ec)**
 
 60 questions · 120 minutes · Single-answer, four-choice · Full domain breakdown and review on finish
 
