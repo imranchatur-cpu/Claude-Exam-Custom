@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Architect Foundations — Mock Exam 3</title>
+<style>
+:root {
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --surface2: #F0F2F7;
+  --border: #DDE1EC;
+  --text: #151820;
+  --text2: #4A5068;
+  --text3: #8891AA;
+  --accent: #3B6BF5;
+  --accent-dim: #EEF2FF;
+  --correct: #1DB87A;
+  --correct-dim: #EAFAF3;
+  --wrong: #D94545;
+  --wrong-dim: #FDEAEA;
+  --warn: #E07B00;
+  --warn-dim: #FEF3E2;
+  --nav-unanswered: #E8EAF2;
+  --nav-answered: #3B6BF5;
+  --nav-flagged: #E07B00;
+  --nav-text: #151820;
+  --nav-answered-text: #fff;
+  --shadow: 0 1px 4px rgba(0,0,0,.08);
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1117;
+    --surface: #181C28;
+    --surface2: #1E2235;
+    --border: #2A2E42;
+    --text: #E4E8F5;
+    --text2: #9198B4;
+    --text3: #5C6280;
+    --accent: #4F7EFF;
+    --accent-dim: #1A2240;
+    --correct: #2ECC8A;
+    --correct-dim: #0D2A20;
+    --wrong: #E05252;
+    --wrong-dim: #2A0F0F;
+    --warn: #F5A623;
+    --warn-dim: #2A1E05;
+    --nav-unanswered: #252A3E;
+    --nav-answered: #4F7EFF;
+    --nav-flagged: #F5A623;
+    --nav-text: #E4E8F5;
+    --nav-answered-text: #fff;
+    --shadow: 0 1px 4px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1117;
+  --surface: #181C28;
+  --surface2: #1E2235;
+  --border: #2A2E42;
+  --text: #E4E8F5;
+  --text2: #9198B4;
+  --text3: #5C6280;
+  --accent: #4F7EFF;
+  --accent-dim: #1A2240;
+  --correct: #2ECC8A;
+  --correct-dim: #0D2A20;
+  --wrong: #E05252;
+  --wrong-dim: #2A0F0F;
+  --warn: #F5A623;
+  --warn-dim: #2A1E05;
+  --nav-unanswered: #252A3E;
+  --nav-answered: #4F7EFF;
+  --nav-flagged: #F5A623;
+  --nav-text: #E4E8F5;
+  --nav-answered-text: #fff;
+  --shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ── INTRO ── */
+#intro-screen {
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+.intro-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  max-width: 640px;
+  width: 100%;
+  padding: 2.5rem 2.5rem 2rem;
+  box-shadow: var(--shadow);
+}
+.intro-badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: .25rem .6rem;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+}
+.intro-card h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: .4rem;
+}
+.intro-card .subtitle {
+  color: var(--text2);
+  font-size: .95rem;
+  margin-bottom: 1.75rem;
+}
+.intro-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem .75rem;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  font-size: .85rem;
+}
+.intro-meta-row { display: contents; }
+.intro-meta .label { color: var(--text3); font-size: .78rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; align-self: center; }
+.intro-meta .val { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+.domain-weights {
+  margin-bottom: 1.75rem;
+}
+.domain-weights h3 { font-size: .8rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text3); margin-bottom: .75rem; }
+.dw-row { display: flex; align-items: center; gap: .75rem; margin-bottom: .45rem; font-size: .85rem; }
+.dw-label { color: var(--text2); flex: 0 0 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dw-bar { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.dw-fill { height: 100%; background: var(--accent); border-radius: 3px; }
+.dw-pct { flex: 0 0 32px; text-align: right; color: var(--text3); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.btn-start {
+  display: block;
+  width: 100%;
+  padding: .85rem 1.5rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: .95rem;
+  font-weight: 700;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: opacity .15s;
+}
+.btn-start:hover { opacity: .88; }
+
+/* ── EXAM LAYOUT ── */
+#exam-screen { flex-direction: row; height: 100vh; overflow: hidden; }
+.exam-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-top {
+  padding: .85rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-title {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: .5rem;
+}
+.timer {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  letter-spacing: .02em;
+}
+.timer.warn { color: var(--warn); }
+.timer.danger { color: var(--wrong); }
+.sidebar-progress {
+  font-size: .78rem;
+  color: var(--text3);
+  margin-top: .25rem;
+}
+.sidebar-progress span { color: var(--text2); font-weight: 600; }
+.sidebar-legend {
+  padding: .6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .75rem;
+  font-size: .72rem;
+  color: var(--text3);
+}
+.legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 3px; vertical-align: middle; }
+.legend-dot.unanswered { background: var(--nav-unanswered); border: 1px solid var(--border); }
+.legend-dot.answered { background: var(--nav-answered); }
+.legend-dot.flagged { background: var(--nav-flagged); }
+.nav-grid-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: .75rem 1rem;
+}
+.nav-section-label {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: .5rem 0 .4rem;
+}
+.nav-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin-bottom: .5rem;
+}
+.nav-btn {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 4px;
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--nav-unanswered);
+  color: var(--nav-text);
+  transition: transform .1s;
+  font-variant-numeric: tabular-nums;
+  position: relative;
+}
+.nav-btn:hover { transform: scale(1.08); }
+.nav-btn.answered { background: var(--nav-answered); color: var(--nav-answered-text); }
+.nav-btn.flagged { background: var(--nav-flagged); color: #fff; }
+.nav-btn.current { outline: 2px solid var(--accent); outline-offset: 1px; }
+.nav-btn.current.flagged { outline-color: var(--warn); }
+
+/* ── EXAM MAIN ── */
+.exam-main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.exam-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: .75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.q-counter {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.domain-tag {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .2rem .55rem;
+  border-radius: 3px;
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+.header-actions { margin-left: auto; display: flex; gap: .5rem; align-items: center; }
+.btn-flag {
+  font-size: .8rem;
+  font-weight: 600;
+  padding: .3rem .75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-flag:hover { border-color: var(--warn); color: var(--warn); }
+.btn-flag.active { background: var(--warn-dim); border-color: var(--warn); color: var(--warn); }
+.exam-content {
+  flex: 1;
+  padding: 1.5rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+.scenario-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: .85rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: .85rem;
+  color: var(--text2);
+}
+.scenario-box strong { color: var(--text); display: block; font-size: .75rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; margin-bottom: .35rem; color: var(--accent); }
+.question-stem {
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+.options { display: flex; flex-direction: column; gap: .5rem; }
+.option-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: .85rem;
+  padding: .85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .15s, background .15s;
+  width: 100%;
+}
+.option-btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); }
+.option-btn.selected { border-color: var(--accent); background: var(--accent-dim); }
+.option-btn.correct { border-color: var(--correct); background: var(--correct-dim); }
+.option-btn.wrong { border-color: var(--wrong); background: var(--wrong-dim); }
+.option-btn:disabled { cursor: default; }
+.opt-letter {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--text3);
+  transition: all .15s;
+  margin-top: .05rem;
+}
+.option-btn.selected .opt-letter { border-color: var(--accent); background: var(--accent); color: #fff; }
+.option-btn.correct .opt-letter { border-color: var(--correct); background: var(--correct); color: #fff; }
+.option-btn.wrong .opt-letter { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+.opt-text { font-size: .92rem; color: var(--text); line-height: 1.55; }
+.exam-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: .85rem 1.5rem;
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+}
+.btn-nav {
+  padding: .55rem 1.1rem;
+  border-radius: var(--radius);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s;
+  border: none;
+}
+.btn-prev { background: var(--surface2); color: var(--text2); }
+.btn-prev:hover { opacity: .75; }
+.btn-next { background: var(--accent); color: #fff; }
+.btn-next:hover { opacity: .88; }
+.btn-finish { background: var(--correct); color: #fff; }
+.btn-finish:hover { opacity: .88; }
+
+/* ── RESULTS ── */
+#results-screen { align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
+.results-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  max-width: 680px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.results-header {
+  padding: 2rem 2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.score-ring {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+.score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-ring circle { fill: none; stroke-width: 7; }
+.score-ring .track { stroke: var(--surface2); }
+.score-ring .fill { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+.score-ring.pass .fill { stroke: var(--correct); }
+.score-ring.fail .fill { stroke: var(--wrong); }
+.score-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.score-number .pct { font-size: 1.4rem; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+.score-number .out-of { font-size: .68rem; color: var(--text3); }
+.results-title { font-size: 1.3rem; font-weight: 700; margin-bottom: .3rem; }
+.results-verdict {
+  display: inline-block;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .25rem .7rem;
+  border-radius: 3px;
+  margin-bottom: .5rem;
+}
+.results-verdict.pass { background: var(--correct-dim); color: var(--correct); }
+.results-verdict.fail { background: var(--wrong-dim); color: var(--wrong); }
+.results-subtext { font-size: .88rem; color: var(--text2); }
+.results-body { padding: 1.5rem 2rem; }
+.results-domains h3 { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 1rem; }
+.domain-result-row {
+  display: grid;
+  grid-template-columns: 1fr auto 110px auto;
+  align-items: center;
+  gap: .5rem .75rem;
+  margin-bottom: .65rem;
+  font-size: .85rem;
+}
+.domain-result-row .dname { color: var(--text2); }
+.domain-result-row .dscore { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.dr-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.dr-fill { height: 100%; border-radius: 3px; }
+.dr-pct { font-size: .78rem; color: var(--text3); font-variant-numeric: tabular-nums; min-width: 34px; text-align: right; }
+.results-actions { display: flex; gap: .75rem; padding: 1.25rem 2rem; border-top: 1px solid var(--border); }
+.btn-review { flex: 1; padding: .65rem 1rem; background: var(--surface2); color: var(--text2); font-size: .88rem; font-weight: 600; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: opacity .15s; }
+.btn-review:hover { opacity: .75; }
+.btn-retry { flex: 1; padding: .65rem 1rem; background: var(--accent); color: #fff; font-size: .88rem; font-weight: 600; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity .15s; }
+.btn-retry:hover { opacity: .88; }
+
+/* ── REVIEW ── */
+#review-screen { min-height: 100vh; }
+.review-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: .85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.review-topbar h2 { font-size: 1rem; font-weight: 700; }
+.btn-back { padding: .4rem .85rem; font-size: .82rem; font-weight: 600; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; }
+.btn-back:hover { border-color: var(--accent); color: var(--accent); }
+.review-filter { margin-left: auto; display: flex; gap: .5rem; }
+.filter-btn { padding: .3rem .7rem; font-size: .78rem; font-weight: 600; border: 1px solid var(--border); border-radius: 3px; background: transparent; color: var(--text3); cursor: pointer; }
+.filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.review-body { max-width: 800px; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.review-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.review-item-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.review-item-header .q-num { font-size: .78rem; font-weight: 700; color: var(--text3); letter-spacing: .05em; text-transform: uppercase; }
+.ri-domain { font-size: .72rem; font-weight: 700; padding: .15rem .5rem; border-radius: 3px; background: var(--accent-dim); color: var(--accent); letter-spacing: .05em; text-transform: uppercase; }
+.ri-status { margin-left: auto; font-size: .78rem; font-weight: 700; }
+.ri-status.correct { color: var(--correct); }
+.ri-status.wrong { color: var(--wrong); }
+.review-item-body { padding: 1rem; }
+.ri-stem { font-size: .9rem; color: var(--text); line-height: 1.6; margin-bottom: .85rem; }
+.ri-options { display: flex; flex-direction: column; gap: .35rem; margin-bottom: 1rem; }
+.ri-opt {
+  display: flex;
+  gap: .6rem;
+  padding: .5rem .75rem;
+  border-radius: var(--radius);
+  font-size: .85rem;
+  border: 1px solid transparent;
+}
+.ri-opt.correct-answer { border-color: var(--correct); background: var(--correct-dim); }
+.ri-opt.user-wrong { border-color: var(--wrong); background: var(--wrong-dim); }
+.ri-opt .ri-letter { font-weight: 700; flex-shrink: 0; width: 18px; }
+.ri-opt.correct-answer .ri-letter { color: var(--correct); }
+.ri-opt.user-wrong .ri-letter { color: var(--wrong); }
+.ri-explanation {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: .75rem;
+  font-size: .83rem;
+  color: var(--text2);
+  line-height: 1.6;
+  border-left: 3px solid var(--accent);
+}
+.ri-explanation strong { color: var(--text); display: block; margin-bottom: .25rem; font-size: .75rem; text-transform: uppercase; letter-spacing: .07em; color: var(--accent); }
+.ri-trap { margin-top: .5rem; }
+.ri-trap strong { color: var(--warn); }
+</style>
+</head>
+<body>
+
+<!-- ══ INTRO ══ -->
+<div id="intro-screen" class="screen active">
+  <div class="intro-card">
+    <span class="intro-badge">Mock Exam 3 — Sat 16 Aug 2026</span>
+    <h1>Claude Certified Architect<br>Foundations</h1>
+    <p class="subtitle">Full-length practice exam · 4 scenarios · 60 questions · Single-answer, four-choice</p>
+    <div class="intro-meta">
+      <span class="label">Questions</span><span class="val">60</span>
+      <span class="label">Time limit</span><span class="val">120 minutes</span>
+      <span class="label">Passing score</span><span class="val">720 / 1000 (72%)</span>
+      <span class="label">Gate target</span><span class="val">≥ 80% to proceed</span>
+    </div>
+    <div class="domain-weights">
+      <h3>Domain weights</h3>
+      <div class="dw-row"><span class="dw-label">D1 — Agentic Architecture</span><span class="dw-bar"><span class="dw-fill" style="width:27%"></span></span><span class="dw-pct">27%</span></div>
+      <div class="dw-row"><span class="dw-label">D2 — Tool Design &amp; MCP</span><span class="dw-bar"><span class="dw-fill" style="width:18%"></span></span><span class="dw-pct">18%</span></div>
+      <div class="dw-row"><span class="dw-label">D3 — Claude Code Config</span><span class="dw-bar"><span class="dw-fill" style="width:20%"></span></span><span class="dw-pct">20%</span></div>
+      <div class="dw-row"><span class="dw-label">D4 — Prompt Engineering</span><span class="dw-bar"><span class="dw-fill" style="width:20%"></span></span><span class="dw-pct">20%</span></div>
+      <div class="dw-row"><span class="dw-label">D5 — Context Management</span><span class="dw-bar"><span class="dw-fill" style="width:15%"></span></span><span class="dw-pct">15%</span></div>
+    </div>
+    <button class="btn-start" onclick="startExam()">Begin Exam</button>
+  </div>
+</div>
+
+<!-- ══ EXAM ══ -->
+<div id="exam-screen" class="screen">
+  <aside class="exam-sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-title">Time remaining</div>
+      <div class="timer" id="timer">2:00:00</div>
+      <div class="sidebar-progress">Answered: <span id="answered-count">0</span> / 60</div>
+    </div>
+    <div class="sidebar-legend">
+      <span><span class="legend-dot unanswered"></span>Unanswered</span>
+      <span><span class="legend-dot answered"></span>Answered</span>
+      <span><span class="legend-dot flagged"></span>Flagged</span>
+    </div>
+    <div class="nav-grid-wrap" id="nav-grid-wrap"></div>
+  </aside>
+  <div class="exam-main">
+    <div class="exam-header">
+      <span class="q-counter" id="q-counter">Q 1 of 60</span>
+      <span class="domain-tag" id="domain-tag">D1</span>
+      <div class="header-actions">
+        <button class="btn-flag" id="flag-btn" onclick="toggleFlag()">⚑ Flag</button>
+      </div>
+    </div>
+    <div class="exam-content" id="exam-content"></div>
+    <div class="exam-footer">
+      <button class="btn-nav btn-prev" onclick="goTo(currentQ - 1)">← Prev</button>
+      <button class="btn-nav btn-next" id="btn-next" onclick="nextOrFinish()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULTS ══ -->
+<div id="results-screen" class="screen">
+  <div class="results-card">
+    <div class="results-header">
+      <div class="score-ring" id="score-ring">
+        <svg viewBox="0 0 100 100">
+          <circle class="track" cx="50" cy="50" r="43"/>
+          <circle class="fill" id="ring-fill" cx="50" cy="50" r="43"/>
+        </svg>
+        <div class="score-number">
+          <span class="pct" id="score-pct">—</span>
+          <span class="out-of" id="score-out">/ 60</span>
+        </div>
+      </div>
+      <div class="results-title" id="results-title">Results</div>
+      <div class="results-verdict" id="results-verdict"></div>
+      <div class="results-subtext" id="results-subtext"></div>
+    </div>
+    <div class="results-body">
+      <div class="results-domains">
+        <h3>Domain breakdown</h3>
+        <div id="domain-breakdown"></div>
+      </div>
+    </div>
+    <div class="results-actions">
+      <button class="btn-review" onclick="showReview('all')">Review All Questions</button>
+      <button class="btn-review" onclick="showReview('wrong')" style="border-color:var(--wrong);color:var(--wrong)">Review Misses Only</button>
+      <button class="btn-retry" onclick="retryExam()">Retry Exam</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REVIEW ══ -->
+<div id="review-screen" class="screen">
+  <div class="review-topbar">
+    <button class="btn-back" onclick="showResults()">← Results</button>
+    <h2>Question Review</h2>
+    <div class="review-filter">
+      <button class="filter-btn active" id="f-all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" id="f-wrong" onclick="setFilter('wrong')">Missed</button>
+      <button class="filter-btn" id="f-correct" onclick="setFilter('correct')">Correct</button>
+    </div>
+  </div>
+  <div class="review-body" id="review-body"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   QUESTION DATA
+══════════════════════════════════════════════ */
+const SCENARIOS = {
+  1: { name: "Scenario 1: Meridian Bank — Refund Processing Agent", context: "Meridian Bank builds a customer refund agent with five tools: get_customer(customer_id), lookup_order(order_id), validate_refund_eligibility(order_id, customer_id), process_refund(order_id, amount), escalate_to_human(handoff_data). Policy requires eligibility verification before every refund. Refunds over $500 require manager approval." },
+  2: { name: "Scenario 2: DevStream Platform — Developer Tooling", context: "DevStream's 12-engineer team shares a monorepo. They use Claude Code for coding assistance and need consistent conventions, shared skills, CI integration, and personal developer customisations — all without stepping on each other." },
+  3: { name: "Scenario 3: InvoiceAI — Document Processing Pipeline", context: "InvoiceAI automates extraction from 10,000 financial documents per week: invoices, purchase orders, and contracts. They use a multi-stage pipeline: extract raw text → classify document type → extract structured fields → validate → batch process." },
+  4: { name: "Scenario 4: Nexus Research — Multi-Agent Research System", context: "Nexus builds a multi-agent research coordinator that delegates to specialist subagents connected to academic databases, patent systems, and web search via MCP servers. Clients pay for structured research reports." }
+};
+
+const QUESTIONS = [
+// ── SCENARIO 1 ──────────────────────────────
+{id:1,scenario:1,domain:1,lesson:"1.4",
+stem:"Production logs show that 8% of refunds skip validate_refund_eligibility and call process_refund directly, resulting in compliance violations. The system prompt already states: \"Always call validate_refund_eligibility before processing any refund.\" What change most effectively eliminates these violations?",
+options:["Strengthen the system prompt: \"Skipping eligibility validation is a critical compliance violation that must never occur.\"","Add few-shot examples demonstrating the correct validate-then-refund sequence across multiple scenarios","Add a PreToolUse hook on process_refund that blocks execution unless validate_refund_eligibility has returned a verified result for that order","Rename validate_refund_eligibility to mandatory_pre_refund_check to make the dependency obvious in the tool name"],
+correct:2,
+explanation:"An 8% failure rate means a probabilistic mechanism is already losing. Financial compliance requires deterministic enforcement. A PreToolUse hook on process_refund places the check outside Claude's decision-making — the tool simply cannot run until the precondition is met.",
+trap:"A and B are both probabilistic (Trap 6 — more of what's already failing). D is Trap 2 — a more descriptive name hints but cannot enforce. Firm language in a system prompt never reaches 0% failure."},
+
+{id:2,scenario:1,domain:1,lesson:"1.5",
+stem:"A PostToolUse hook is added to process_refund. It checks the refund amount and sends an alert if it exceeds $500. Despite this, a $650 refund completes successfully without escalation. What is the root cause?",
+options:["The hook is inspecting the tool result object rather than the tool input arguments — it should check the amount parameter before the call","The alert threshold should trigger a block, not just a notification — change the hook to reject the tool call","PostToolUse fires after the tool has already executed; the refund has already completed by the time the hook runs, so it cannot prevent anything","The hook should be attached to validate_refund_eligibility instead, where the amount is first confirmed"],
+correct:2,
+explanation:"PostToolUse fires after execution. By the time it runs, the money has already moved. To prevent a transaction, the enforcement must be PreToolUse — which fires before the tool runs. PostToolUse's job is normalising data on the way back to the model, not blocking operations.",
+trap:"A describes a real design mistake but is not the root cause. D is Trap 9 — switching timing (Pre→Post or vice versa) without recognising that only PreToolUse can block."},
+
+{id:3,scenario:1,domain:2,lesson:"2.1",
+stem:"get_customer has the description: \"Gets customer data.\" After the system prompt was updated to include \"review all customer records before processing any transaction,\" the agent began calling get_customer for order lookups that don't require customer data at all. Tool descriptions are unchanged. What is the most likely cause and fix?",
+options:["The get_customer description is too vague; rewrite it with explicit use cases, example inputs, and boundaries","The system prompt phrase 'customer records' keyword-matches the get_customer tool name; rephrase the system prompt to avoid the accidental association","Add few-shot examples showing correct tool selection between get_customer and lookup_order","Merge get_customer and lookup_order into a single get_customer_with_order composite tool"],
+correct:1,
+explanation:"The stem provides two eliminating facts: descriptions are unchanged AND the problem started after the system prompt update. This means the update is the cause. The phrase 'customer records' in the system prompt accidentally keyword-matches the get_customer tool name.",
+trap:"A, C, and D are all eliminated by Trap 4 — the stem rules them out by stating descriptions are unchanged and identifying when the problem began. 'After X, Y started happening' means X is the cause."},
+
+{id:4,scenario:1,domain:2,lesson:"2.2",
+stem:"process_refund calls a payment API. When the API key expires, the tool returns {\"success\": true, \"refunds\": [], \"status\": \"Authentication failed\"}. The agent responds \"No refunds found for this customer\" and closes the case. What is the root cause?",
+options:["Instruct the agent via system prompt to treat empty refund arrays as potential errors requiring additional verification steps","The tool cannot distinguish an authentication failure from a valid empty result; it should return isError: true with errorCategory: 'permission' on auth failure","The third-party payment API is returning a misleading success flag; this is a vendor problem requiring an API contract fix","A PostToolUse hook should parse the status field and convert 'Authentication failed' into a structured error signal"],
+correct:1,
+explanation:"'Found nothing' is not the same as 'couldn't look.' The tool masks an access failure as a successful empty result. The fix is at the tool layer: return isError: true with the appropriate errorCategory. The agent is behaving correctly given the information it received.",
+trap:"A is Trap 6 — a prompt instruction cannot distinguish the two cases structurally. C is Trap 7 — you control the tool layer and must handle upstream misbehaviour there. D is Trap 2 — prose parsing in hooks is fragile; the tool design is the right fix."},
+
+{id:5,scenario:1,domain:2,lesson:"2.2",
+stem:"process_refund returns HTTP 503 on server overload (transient) and HTTP 404 when an order ID doesn't exist in the system (permanent). The agent retries both identically. After exhausting retries on 404s, the server recovers but the retry budget is spent. What structural change to the error response fixes this?",
+options:["Include the raw HTTP status code in the error message text so the agent can read and branch on it","Return a structured errorCategory field ('transient' vs 'business') with an isRetryable boolean flag","Increase the retry limit from 3 to 10 to give transient errors more opportunities to succeed","Add a system prompt rule: 'Do not retry requests that return a 404 status code'"],
+correct:1,
+explanation:"Structured error categories allow the agent to apply correct retry logic without parsing prose. A 503-overload is transient (retry as-is). A 404-missing-order is a permanent business error (never retry). The distinction must be in the response structure, not inferred from a status code embedded in text.",
+trap:"A is Trap 7 — more information but still requires fragile string parsing. C is Trap 6 — more retries don't fix misclassification. D is Trap 6 — a prompt instruction is probabilistic."},
+
+{id:6,scenario:1,domain:4,lesson:"4.3",
+stem:"Incoming documents are standard refund requests, chargeback disputes, or warranty claims — each with a different extraction schema implemented as a separate tool. Documents arrive in all three types mixed together. The agent must always produce structured output and never return plain text. The document type is determined by reading the document. Which tool_choice setting is correct?",
+options:["{\"type\": \"auto\"} — Claude decides whether to call a tool based on document content","{\"type\": \"any\"} — Claude must call a tool but selects which schema fits the document","{\"type\": \"tool\", \"name\": \"extract_standard_refund\"} — ensures consistent structured output regardless of type","Omit tool_choice; a system prompt instruction tells Claude to always call the appropriate extraction tool"],
+correct:1,
+explanation:"The document type is UNKNOWN until Claude reads it — Claude must choose the schema. 'any' guarantees a tool call while leaving schema selection to the model. This is the right setting whenever the choice is genuinely the model's to make.",
+trap:"C welds every document to the standard-refund schema regardless of type — it produces structured output but always the wrong structure for chargebacks and warranty claims. A allows a prose response (no guarantee). D is probabilistic."},
+
+{id:7,scenario:1,domain:5,lesson:"5.2",
+stem:"A customer disputes a 45-day-old charge of $4,200. The agent confirms the charge is legitimate and has explained the 30-day refund policy twice. The customer repeats their dissatisfaction but has not explicitly asked to speak with a manager. Company policy is silent on any accommodation outside the 30-day window. What most justifies escalation at this moment?",
+options:["The customer's repeated frustration indicates a need for human empathy the agent cannot adequately provide","The $4,200 transaction value exceeds a threshold that warrants human review by default","Company policy is silent on out-of-window accommodations; a human must make that judgement call","The 45-day transaction age creates potential legal complexity outside the agent's area of expertise"],
+correct:2,
+explanation:"Escalate on authority, not on discomfort and not on size. The policy is silent on this case — the agent has no authority to decide. That policy gap is a valid escalation trigger. The customer hasn't explicitly requested a human, so that trigger isn't available; the gap in authority is.",
+trap:"A is escalating on emotional discomfort (invalid trigger). B is escalating on transaction value / size (invalid trigger). D is Trap 7 — speculated complexity is not a trigger. Only three triggers are valid: explicit human request, policy gap, genuine inability to progress."},
+
+{id:8,scenario:1,domain:5,lesson:"5.2",
+stem:"The escalate_to_human tool is called with {\"customer_id\": \"C-7712\", \"issue\": \"Refund requested\"}. The human agent must call the customer back for more information, forcing the customer to re-explain from scratch. Which fields were missing from the handoff?",
+options:["The order ID, a summary of actions already taken, the root cause of the denial, and a recommended next action","The customer's full name, preferred contact method, and account tier","A verbatim transcript of the conversation so the human can review the full exchange","A confidence score indicating how certain the agent was about its refund decision"],
+correct:0,
+explanation:"The human agent cannot see the conversation transcript. The handoff must be fully self-contained: customer ID, order ID, issue summary, actions taken, root cause, recommended next action. Every missing field forces the customer to re-explain something the agent already established.",
+trap:"B contains supplementary details but misses the operationally critical fields. C is wrong — 'humans don't get the transcript' is the entire reason the handoff format exists. D is Trap 3 — confidence scores from models are unreliable and not a handoff requirement."},
+
+{id:9,scenario:1,domain:4,lesson:"4.4",
+stem:"A Pydantic model validates refund extractions. All required fields pass validation. However, 4% of processed refunds fail downstream because refund_amount doesn't equal the sum of the individual line_items. Pydantic reports no validation errors on these cases. What is the most effective fix?",
+options:["Add stricter per-field constraints to refund_amount: minimum value, maximum decimal places, and numeric type enforcement","Add a @model_validator that runs after Pydantic parsing and verifies refund_amount equals sum(line_items), producing a specific error message if they diverge","Make refund_amount an optional field to prevent the model from hallucinating values when amounts are unclear","Add few-shot examples in the extraction prompt showing correct refund calculations"],
+correct:1,
+explanation:"Pydantic validates the shape and type of individual fields. It cannot express rules that span multiple fields — that requires a cross-field validator. The specific error message it produces ('stated total 500 but line items sum to 450') is the third ingredient of an effective retry.",
+trap:"A tightens per-field constraints but cannot check relationships between fields. C makes the problem worse by hiding the field entirely. D is Trap 3 — examples reduce the frequency but cannot perform arithmetic validation."},
+
+{id:10,scenario:1,domain:1,lesson:"1.4",
+stem:"Compliance requires that every refund is logged to an audit system before the transaction completes. This rule must hold 100% of the time, for every agent, in every session, with no exceptions. Currently it lives in the project .claude/CLAUDE.md. The rule is violated in 2% of sessions. What is the root cause and correct fix?",
+options:["Move the rule from project-level to user-level ~/.claude/CLAUDE.md for stronger personal enforcement","Add a PreToolUse hook on process_refund that invokes the audit logging tool before allowing the refund to execute","Strengthen the CLAUDE.md instruction with more explicit language: 'CRITICAL: audit logging is MANDATORY before every refund'","Create a /log-then-refund skill that developers invoke to ensure the correct sequence"],
+correct:1,
+explanation:"'100% of the time, no exceptions' means deterministic enforcement. CLAUDE.md is probabilistic — Claude reads it as guidance and weighs it alongside everything else in context. Contradictions may resolve arbitrarily. Only hooks and settings.json enforce deterministically. PreToolUse on process_refund cannot be bypassed by Claude's reasoning.",
+trap:"A is Trap 1 and makes things worse — user-level scope means team members never receive it. C is Trap 6 — firmer language in a prompt moves the failure rate, never to zero. D is Trap 6 — a skill is task-triggered and probabilistic."},
+
+{id:11,scenario:1,domain:1,lesson:"1.5",
+stem:"A new compliance requirement states that a risk classification must be logged before any subagent is created by the coordinator. Which hook and attachment point implement this deterministically?",
+options:["A SubagentStart hook that logs the classification when the subagent begins initialising","A PreToolUse hook on the Task tool that logs the risk classification before the subagent is spawned","A PostToolUse hook on the Task tool that records the classification after each subagent completes","A system prompt instruction to the coordinator: 'Always log risk classification before creating any subagent'"],
+correct:1,
+explanation:"The Task tool is how coordinators spawn subagents. PreToolUse on Task fires before the subagent is created — the earliest available enforcement point. This is deterministic: Claude cannot bypass it.",
+trap:"A is wrong — SubagentStart fires when the subagent initialises (after creation) and cannot block. C is wrong — PostToolUse fires after the subagent completes (too late for a 'before creation' requirement). D is Trap 6 — probabilistic."},
+
+{id:12,scenario:1,domain:5,lesson:"5.3",
+stem:"Three refund-processing subagents handle different categories. When the warranty_refund subagent times out, it returns {\"status\": \"unavailable\"}. The coordinator marks the entire batch failed and discards results already completed by the other two subagents. What anti-pattern does this represent?",
+options:["Silent suppression — the subagent is not distinguishing between a connection failure and a valid empty result","Workflow termination — aborting the entire pipeline on a single subagent failure and discarding completed work","Context degradation — the coordinator has lost track of which subagents completed successfully","Attention dilution — too many concurrent subagents are competing for coordinator attention"],
+correct:1,
+explanation:"Workflow termination discards completed work when one specialist fails. The other two subagents finished successfully — their results are valuable and should be preserved. The correct pattern is for the coordinator to use partial results, log the timeout, and decide whether to retry only the failed specialist.",
+trap:"A is a different anti-pattern (returning empty as success when access failed). The returned 'unavailable' here is at least honest about failure. C and D are different context problems entirely."},
+
+{id:13,scenario:1,domain:3,lesson:"3.6",
+stem:"A CI pipeline runs daily: `claude -p \"Verify all refund policy rules in src/policy/ are documented in docs/compliance/\"`. It consistently reports 100% compliance. Manual audits regularly find undocumented rules. What is the most likely cause?",
+options:["The -p flag restricts Claude's file access in CI, preventing it from reading all relevant policy files","Without explicit validation criteria defining what 'documented' means, Claude performs a shallow check and reports a confident but inaccurate result","--output-format json should be added so the CI environment can properly parse and evaluate the findings","A second independent Claude instance should verify the first instance's findings before reporting"],
+correct:1,
+explanation:"'Verify that rules are documented' is a vague instruction with no defined criteria. Claude has no explicit definition of what constitutes documentation coverage, so it performs a shallow scan and reports confidently. A check that never fails isn't checking — the instruction is the problem.",
+trap:"A is Trap 8 — -p makes the session non-interactive, it does not restrict tool access. C is Trap 7 — JSON format affects output structure, not analysis quality. D is Trap 5 — a second instance reading the same vague prompt draws the same conclusion."},
+
+{id:14,scenario:1,domain:4,lesson:"4.1",
+stem:"Code review findings show developer trust eroding. A survey reveals: 'We've stopped reading findings — too many false positives in style and naming categories make everything look noisy.' High-precision categories (security, logic errors) are now being ignored along with the noise. What is the best approach to restore trust?",
+options:["Temporarily disable high-false-positive categories (style, naming) and keep only high-precision categories while improving the disabled ones","Show a confidence score alongside each finding so developers can filter by confidence threshold","Add a second model pass to verify each finding before surfacing it to reduce false positives","Raise the severity threshold uniformly so only critical findings are reported across all categories"],
+correct:0,
+explanation:"Trust is broken because developers have stopped reading entirely. Any solution that still requires reading (confidence scores, severity filters) fails the people who have already disengaged. Removing the noise source directly restores the signal. Cut coverage to restore credibility.",
+trap:"B is Trap 7 — confidence scores require reading; developers have already stopped. C is Trap 5 — a second pass on low-precision prompts still has low precision. D is Trap 10 — raising the threshold hides valid medium-severity findings."},
+
+{id:15,scenario:1,domain:1,lesson:"1.2",
+stem:"A coordinator delegates to three subagents: chargeback_specialist, warranty_specialist, fraud_specialist. The coordinator was loaded with Meridian's complete policy documents at session start. The fraud_specialist's reports consistently contain no policy references despite the policies being directly relevant. What is the root cause?",
+options:["The fraud_specialist subagent is not fine-tuned on Meridian Bank's specific policy content","The coordinator is not passing the relevant policy content into the fraud_specialist's task prompt; subagents do not inherit coordinator context","The subagents should run sequentially so the fraud_specialist can build on the other specialists' policy-referenced findings","Add a policy query tool to the fraud_specialist so it can retrieve policy content independently on demand"],
+correct:1,
+explanation:"Subagent isolation. The fraud_specialist starts blank — it sees only what the coordinator writes into its task prompt. Policy documents loaded into the coordinator's context are not shared automatically. The coordinator must explicitly inject the relevant policy sections into each task prompt it writes.",
+trap:"A is false — subagents use the same model. C is wrong — sequencing doesn't transfer coordinator context to subagents. D is Trap 5 — it works but adds a tool call for information the coordinator already holds and could inject directly."},
+
+// ── SCENARIO 2 ──────────────────────────────
+{id:16,scenario:2,domain:3,lesson:"3.2",
+stem:"DevStream's team creates a /security-audit skill. Three requirements: (1) available to every developer on the project, (2) cannot modify any files, (3) produces extensive output that must not pollute the main conversation. Which configuration is correct?",
+options:["~/.claude/skills/security-audit/SKILL.md with allowed-tools: [\"Read\",\"Grep\",\"Glob\"] and context: fork",".claude/commands/security-audit.md with allowed-tools: [\"Read\",\"Grep\",\"Glob\"]",".claude/CLAUDE.md with a security scanning procedure written as an always-loaded instruction",".claude/skills/security-audit/SKILL.md with allowed-tools: [\"Read\",\"Grep\",\"Glob\"] and context: fork"],
+correct:3,
+explanation:"Three requirements → three mechanisms. .claude/skills/ (not ~/.claude/) puts the file in the repo, shared on clone. allowed-tools: Read/Grep/Glob makes it read-only. context: fork isolates noisy output to a sub-session, keeping the main conversation clean.",
+trap:"A is Trap 1 — identical to D except for the ~/ prefix, which makes it personal, not shared. B is Trap 10 — right folder structure, no context: fork (meets two of three requirements). C uses CLAUDE.md for a task-specific procedure — wrong mechanism."},
+
+{id:17,scenario:2,domain:3,lesson:"3.1",
+stem:"A developer suspects their Claude Code session is not loading the project's CLAUDE.md conventions correctly — edits are being made with inconsistent standards. What is the fastest way to confirm which CLAUDE.md files the current session has actually loaded?",
+options:["Ask Claude to list the conventions it is currently following","Run /compact to reset the session state and force a configuration reload","Delete ~/.claude/CLAUDE.md to eliminate user-level configuration as a variable","Run /memory"],
+correct:3,
+explanation:"/memory is the diagnostic command. It shows which instruction files this session actually loaded. Asking Claude what conventions it follows produces plausible-sounding testimony — Claude can paraphrase conventions from training or partial context and sound completely confident, which proves nothing about what actually loaded.",
+trap:"A is testimony vs evidence — the exam uses the word 'actually' as a tell. B is Trap 8 — /compact summarises context, it doesn't reload configuration. C is Trap 5 — destructive and not diagnostic; also makes the problem worse."},
+
+{id:18,scenario:2,domain:3,lesson:"3.3",
+stem:"DevStream has TypeScript test files (*.test.ts) scattered across 50+ directories. All test files should follow the same import ordering and assertion conventions. Where should these conventions live?",
+options:["In the root CLAUDE.md — always loaded, applies to everything in the project","In a directory-level CLAUDE.md placed in each directory that contains tests","In .claude/rules/testing.md with paths: [\"**/*.test.ts\"] in the frontmatter","In a /testing skill that developers invoke when they begin working on tests"],
+correct:2,
+explanation:"'One file type, scattered across many directories' is the exact use case for path-scoped rules. .claude/rules/ with a paths: glob loads only when a matching file is touched — Terraform rules stay out of context during React work, test rules load only during test edits.",
+trap:"A loads always, wasting tokens on every session regardless of whether tests are being touched. B requires creating 50+ separate files (not maintainable). D makes the convention task-triggered — developers must remember to invoke it."},
+
+{id:19,scenario:2,domain:3,lesson:"3.6",
+stem:"A CI pipeline runs: `claude -p \"Verify API contracts haven't changed\" --output-format json`. A senior engineer tells a junior that the -p flag restricts Claude's file access in CI as a security measure. Is this correct?",
+options:["Yes — -p enables a restricted security sandbox that limits file and tool access in non-interactive mode","No — -p makes the session non-interactive (print result and exit) but does not restrict tools or file access at all","Partially — -p restricts interactive tools like Bash but leaves read-only tools like Read and Grep available","Partially — -p is unrelated to file access; use --permission-mode to control actual restrictions"],
+correct:1,
+explanation:"-p (--print) changes how the session starts and ends: it takes the instruction, does the work, prints to stdout, and exits without waiting for user input. Claude Code retains full access to all configured tools. To restrict tool access, use --allowedTools or --disallowedTools explicitly.",
+trap:"A is Trap 8 — this restriction does not exist. C is Trap 8 — same misconception, partially stated. D has a true fact about --permission-mode but incorrectly implies -p is unrelated to the question's premise."},
+
+{id:20,scenario:2,domain:3,lesson:"3.4",
+stem:"A developer uses plan mode to investigate a complex bug affecting five services. After 20 minutes, they identify the fix: a single configuration value in one file. What is the correct next step?",
+options:["Complete the entire session in plan mode to maintain investigation consistency","Start a new session in direct execution mode to apply the identified fix","Switch to direct execution mode within the current session and apply the fix","Stay in plan mode, fully document the fix, and hand off to a colleague to apply in a separate session"],
+correct:2,
+explanation:"Plan mode is for ambiguity, not difficulty. Once the change is scoped to a single known fix, planning adds nothing. Switch to direct execution in the same session — starting a new session discards the investigation context that produced the fix.",
+trap:"A — 'consistency' is a fake virtue. B loses the 20 minutes of investigation that identified the fix. D is Trap 5 — unnecessary overhead; the developer has all the context they need."},
+
+{id:21,scenario:2,domain:1,lesson:"1.3",
+stem:"A coordinator processes requests and delegates research to a research_subagent. The coordinator holds a comprehensive API documentation database at session start. The research_subagent's responses consistently miss API-specific constraints that were covered in the coordinator's context. What is the root cause?",
+options:["The research_subagent needs to be connected to the same MCP server as the coordinator to access the documentation","The coordinator is not injecting the relevant API documentation into the research_subagent's task prompt; subagents do not automatically inherit coordinator context","The coordinator should handle all research tasks itself rather than delegating, since context cannot be transferred between agents","Run the research_subagent after the coordinator's analysis phase so it can build on prior work"],
+correct:1,
+explanation:"Subagent isolation. The research_subagent's entire world is the task prompt the coordinator writes. Documentation held in the coordinator's context is not inherited. The coordinator must explicitly copy the relevant sections into the task string it passes.",
+trap:"A adds complexity for information the coordinator already holds. C defeats the purpose of delegation. D — sequencing doesn't transfer context; the subagent still starts blank regardless of when it runs."},
+
+{id:22,scenario:2,domain:3,lesson:"3.2",
+stem:"A developer wants a personal /refactor-imports skill applying their own formatting preferences. This skill should not affect any other developer on the team. Where should the skill file be placed?",
+options:[".claude/skills/refactor-imports/SKILL.md","~/.claude/skills/refactor-imports/SKILL.md",".claude/commands/refactor-imports.md","In the root CLAUDE.md under a personal preferences section"],
+correct:1,
+explanation:"Personal skill → ~/.claude/ (home folder, not committed to git, not shared). Team skill → .claude/ (repo, shared on clone). The tilde is the entire answer.",
+trap:"A puts the skill in the repo — it is shared with every developer on clone (Trap 1). C is also in .claude/ and therefore shared. D is Trap 6 — CLAUDE.md is loaded for everyone."},
+
+{id:23,scenario:2,domain:2,lesson:"2.4",
+stem:"DevStream wants to connect to: (1) a shared GitHub Enterprise instance for all 12 developers, (2) a patent search API for all developers, (3) an experimental personal data warehouse one developer is testing alone. Which MCP configuration is correct?",
+options:["All three servers in .mcp.json — project-level config covers all team resources","GitHub Enterprise and patent API in .mcp.json; personal data warehouse in ~/.claude.json","GitHub Enterprise in ~/.claude/mcp.json; patent API and data warehouse in .mcp.json","All three servers in ~/.claude.json — MCP configuration should always be personal to avoid conflicts"],
+correct:1,
+explanation:".mcp.json (project root) = shared with the team on clone. ~/.claude.json (home folder) = personal machine, not shared. Team-wide servers go in the project file; experimental personal servers go in the personal file.",
+trap:"A shares the experimental server with the whole team. C uses the path ~/.claude/mcp.json which does not exist — the personal file is ~/.claude.json (a file, not a folder). D puts team-wide servers in personal config."},
+
+{id:24,scenario:2,domain:4,lesson:"4.6",
+stem:"DevStream's code review agent generates PR feedback. Analysis shows non-obvious issues are only caught in human review. When the generator's reasoning is examined, it shows Claude explicitly considered and dismissed these exact cases during code generation. What change most effectively addresses this?",
+options:["Include the full test suite and documentation in the review agent's context so it has more information","Add few-shot examples of the non-obvious issue types that are currently being missed","Run a second review pass using the same agent instance with a higher temperature setting","Run an independent Claude instance for review without access to the generator's reasoning or prior decisions"],
+correct:3,
+explanation:"The stem makes the diagnosis explicit: 'Claude already considered and dismissed these cases.' More information is not the gap — independence is. A second instance that never saw the generation reasoning has no prior commitment to defend. It will challenge; the original instance will confirm.",
+trap:"A and B are Trap 6 — the stem eliminates them by stating Claude already considered these cases. C uses the same instance; it retains its original reasoning regardless of temperature."},
+
+{id:25,scenario:2,domain:3,lesson:"3.5",
+stem:"A developer asks Claude to address three issues simultaneously: (1) fix a null pointer in the auth module, (2) update the test suite for that module, (3) update the API response schema that tests in issue 2 must conform to. What is the correct sequencing?",
+options:["Address all three in a single message for maximum efficiency","Fix issues 1 and 2 first (they are directly related), then address 3","Fix issue 3 first (the schema change defines what tests in issue 2 must look like), then 1 and 2","Fix issue 1 first (the original bug), then 2, then 3 in logical dependency order"],
+correct:2,
+explanation:"Three-part sequencing rule: resolve dependencies first, batch what interacts, sequence what's independent. Issue 3 changes the output shape that issue 2 must conform to. Fixing tests before the schema change means rewriting them immediately after. Fix 3 first, then 1 and 2.",
+trap:"A is Trap 10 — the three issues interfere with each other. B gets the dependency order backwards — tests written before the schema change immediately become stale. D is also the wrong order for the same reason."},
+
+{id:26,scenario:2,domain:2,lesson:"2.3",
+stem:"A synthesis subagent calls back to the coordinator for every fact verification, even simple routine lookups. Analysis: 82% of verifications match a clear, stable pattern; 18% require coordinator judgment. Each round-trip adds 400ms. What is the best architectural fix?",
+options:["Build a composite verify_and_synthesise tool that handles both routine and complex verifications in a single call","Give the synthesis subagent a scoped verify_fact tool for routine lookups (82%); route complex cases (18%) through the coordinator as before","Increase the coordinator's context window to handle more concurrent verification tasks efficiently","Spawn multiple synthesis subagents in parallel to amortise the round-trip overhead"],
+correct:1,
+explanation:"An explicit 82/18 split signals: handle the common case locally with a scoped tool, escalate the exception. This is the tool distribution pattern. Adding the scoped tool eliminates 82% of round-trips without requiring coordinator judgment for them.",
+trap:"A is Trap 5 — a single tool can't selectively apply coordinator judgment. C is Trap 6 — context window doesn't fix architecture. D is Trap 5 — parallelism reduces wall-clock time for the 18% but doesn't eliminate the per-call overhead."},
+
+{id:27,scenario:2,domain:3,lesson:"3.6",
+stem:"The CI pipeline needs to post inline PR comments for each security finding, with file, line number, severity, and rationale. Currently Claude returns findings as prose. What is the minimal change that produces machine-parseable output?",
+options:["Add 'respond only with valid JSON' to the system prompt","Add --output-format json --json-schema '{...}' with fields for file, line, severity, and rationale","Parse the prose output with a regex in the CI script to extract findings","Add a second Claude pass to convert findings to structured JSON after the initial analysis"],
+correct:1,
+explanation:"--json-schema forces the final answer to match the schema exactly — the result lands in the structured_output field of the response envelope. 'Respond in JSON' asks probabilistically. This is the forcing vs asking distinction directly applied to CI.",
+trap:"A is Trap 6 — asking Claude to format as JSON is probabilistic. C is Trap 6 — fragile and breaks on edge cases. D is Trap 5 — unnecessary overhead when the first pass can be forced directly."},
+
+{id:28,scenario:2,domain:1,lesson:"1.7",
+stem:"A developer uses --resume to continue a debugging session from yesterday. During the resumed session, Claude makes recommendations based on a file structure that was significantly refactored this morning. What is the correct approach going forward?",
+options:["Use fork_session to create a branch from the resumed session that incorporates awareness of the refactored structure","Start a fresh session and inject a structured summary of yesterday's investigation findings as the opening context","Run /compact in the resumed session to refresh Claude's understanding of the current file structure","Update the system prompt in the resumed session to describe the new file structure explicitly"],
+correct:1,
+explanation:"After files change, neither --resume nor fork_session is appropriate — both carry stale tool results from before the refactor. Start fresh and inject a structured summary of prior findings. This preserves the investigation knowledge without the stale file references.",
+trap:"A is wrong — fork_session creates branches from existing context (stale context inherits). C is wrong — /compact summarises the conversation but doesn't refresh knowledge of external files. D is Trap 6 — adding a system prompt description doesn't override stale tool results."},
+
+{id:29,scenario:2,domain:4,lesson:"4.5",
+stem:"DevStream runs three automated tasks: (1) PR style checks that block merging until complete, (2) weekly codebase security audits reviewed Monday morning, (3) nightly test generation for new code reviewed by developers next day. Which tasks should use the Message Batches API?",
+options:["All three — 50% cost reduction is valuable for all automated workloads","Weekly security audits only — nightly tasks are frequent enough to require synchronous handling","Weekly security audits and nightly test generation","None — the 24-hour processing window makes batching unsuitable for automated pipelines"],
+correct:2,
+explanation:"The only question is whether a human is blocked waiting. PR checks: developers cannot merge until complete → synchronous. Security audits: reviewed Monday morning → batch. Nightly test gen: reviewed next day → batch. Frequency is irrelevant — 'nightly' still has all night.",
+trap:"A includes PR checks in batching — developers are waiting (Trap 6). B incorrectly keeps nightly tasks synchronous because 'nightly sounds frequent.' D is Trap 8 — batching is designed for exactly these automated, non-blocking pipelines."},
+
+{id:30,scenario:2,domain:5,lesson:"5.4",
+stem:"During a long codebase investigation, the developer notices the agent has started saying 'typical repository patterns' and 'standard implementations' instead of naming specific class names and file paths it identified earlier. What is the most effective fix?",
+options:["Switch to a model with a larger context window to prevent findings from being overwritten","Start a new session to reset the context degradation before it gets worse","Maintain a scratchpad file during the investigation where the agent records and can consult key findings","Run /compact to summarise and preserve the key findings before they are lost"],
+correct:2,
+explanation:"Context degradation is a structural problem, not a capacity problem. A scratchpad file gives the agent a persistent, precise reference for specific findings regardless of how long the conversation runs. When the agent starts generalising, it reads the scratchpad rather than reconstructing from memory.",
+trap:"A is Trap 6 — a larger window holds more tokens but doesn't fix attention drift from precision to vagueness. B loses all findings from the investigation. D is wrong — /compact loses exact detail, which is the specific problem here."},
+
+// ── SCENARIO 3 ──────────────────────────────
+{id:31,scenario:3,domain:4,lesson:"4.3",
+stem:"InvoiceAI has three extraction tools: extract_invoice, extract_purchase_order, extract_contract. Documents arrive in all three types mixed. The agent must always produce structured output and never return plain text. The document type is determined by reading the document. Which tool_choice setting is correct?",
+options:["{\"type\": \"auto\"} — Claude decides whether a tool call is needed based on the document","{\"type\": \"any\"} — Claude must call a tool but selects which schema fits the document type","{\"type\": \"tool\", \"name\": \"extract_invoice\"} — guarantees consistent structured output","Omit tool_choice; the system prompt instructs Claude to always call the appropriate extraction tool"],
+correct:1,
+explanation:"Unknown type, multiple schemas, model must choose — 'any' is correct. It guarantees a tool call (no prose response) while leaving the schema selection to the model. Force-by-name is correct only when you already know which tool applies.",
+trap:"C welds every document to the invoice schema, producing structured output but always the wrong structure for POs and contracts. A allows a prose response (no guarantee). D is probabilistic."},
+
+{id:32,scenario:3,domain:4,lesson:"4.3",
+stem:"InvoiceAI's extraction schema marks purchase_order_number as required. On invoices (which never have a PO number), the model frequently returns invented values like 'PO-UNAVAILABLE' or plausible-looking strings. What is the most effective fix?",
+options:["Add a validator that flags PO numbers not matching the format PO-XXXXXXX","Add few-shot examples showing invoices without PO numbers so the model learns to leave the field empty","Change purchase_order_number to nullable: {\"type\": [\"string\", \"null\"]}","Remove purchase_order_number from the schema entirely for the invoice extraction tool"],
+correct:2,
+explanation:"Required fields corner the model — it must produce something even when the source document doesn't have it. Making the field nullable allows the model to return an honest null. An honest null is always better than a plausible fabrication: nulls are visible downstream, fabrications are not.",
+trap:"A — format validation can't catch invented values that happen to look correct. B is Trap 3 — examples reduce frequency but don't eliminate the pressure created by the 'required' constraint. D solves the issue for invoices but implies separate schemas, which may not match the question's architecture."},
+
+{id:33,scenario:3,domain:4,lesson:"4.4",
+stem:"InvoiceAI's pipeline: (1) extract raw text → (2) classify document type → (3) extract structured fields. Step 2 misclassifies invoices as purchase orders 6% of the time, causing step 3 to extract wrong fields. The product team proposes merging steps 2 and 3 into a single combined prompt. What is the better approach?",
+options:["Merge steps 2 and 3 — fewer steps means fewer error propagation points in the pipeline","Keep the steps separate and add a validation check between steps 2 and 3 before extraction begins","Add more few-shot examples to step 2 to reduce the misclassification rate below 1%","Run step 2 three times using different temperatures and use majority voting for the final classification"],
+correct:1,
+explanation:"The damage happens at the boundary between steps 2 and 3. Fix the boundary. Better examples in step 2 only lower the rate — whatever still slips through cascades into step 3 identically. An inter-step validation gate catches misclassifications before they reach extraction.",
+trap:"A is the proposal from the stem — planted as a wrong answer. B is correct. C is Trap 3+6 — examples reduce frequency but don't fix pipeline structure. D is Trap 5 — 3x cost, and what slips through majority voting still cascades."},
+
+{id:34,scenario:3,domain:4,lesson:"4.4",
+stem:"InvoiceAI's Pydantic model validates extractions with no reported errors, yet 3% of invoices fail downstream because total_amount doesn't equal the sum of line_items. Both total_amount and line_items are required fields and pass individual validation. What is missing?",
+options:["Make total_amount a nullable field to reduce hallucination pressure on the model","Add a string enum 'unclear' to line_items entries for cases where amounts are ambiguous","Add a @model_validator that runs after Pydantic parsing, verifies total_amount equals sum(line_items), and produces a specific error message feeding the retry","Increase the retry count to give the model more attempts to produce a matching total"],
+correct:2,
+explanation:"Pydantic validates each field independently — types, presence, range. It cannot express relationships between two fields. A cross-field validator checks the sum after parsing and produces a specific, actionable error message. That error message is the third ingredient of an effective retry.",
+trap:"A makes the problem worse — nulling the field hides the mismatch. B is for ambiguous classification, unrelated. D is Trap 6 — retrying without a specific error message doesn't help the model correct arithmetic."},
+
+{id:35,scenario:3,domain:4,lesson:"4.2",
+stem:"InvoiceAI's tool routing agent misroutes ambiguous queries like 'process this document' to the wrong extraction tool. It handles unambiguous cases well but struggles at type boundaries. What is the most effective few-shot improvement?",
+options:["Add 4–6 examples grouped by document type, covering diverse variants of each type","Add 4–6 examples specifically targeting boundary cases, each with rationale explaining why one tool was chosen over plausible alternatives","Add 10–15 diverse examples across all document types to improve general routing accuracy","Add negative examples showing which tool should NOT be used for each document type"],
+correct:1,
+explanation:"The failure is at the boundary — examples must sit at the boundary. Examples grouped by type teach the model the categories, which it already knows. The rationale for why one tool was chosen over alternatives is what generalises to new boundary cases the model hasn't seen.",
+trap:"A teaches what the model already knows. C is Trap 5 — volume doesn't fix boundary confusion. D is Trap 10 — negative examples help but without rationale for the positive choice, they don't resolve boundary cases."},
+
+{id:36,scenario:3,domain:4,lesson:"4.5",
+stem:"InvoiceAI batches 10,000 documents per night. Morning review shows 200 failed extractions. The team needs to reprocess only those 200 without resubmitting all 10,000. What field in the Batches API enables this?",
+options:["The batch_id field in the batch response envelope, which identifies the specific batch run","The custom_id field set per request, which correlates each individual request to its response","A document_hash field computed from document content for deduplication","The error_code field in failed responses, which identifies the failure type for filtering"],
+correct:1,
+explanation:"custom_id is set by you on each request and appears in the corresponding response. Without it you cannot identify which of 10,000 documents failed. With it you identify the 200, fix what caused each, and resubmit only that subset.",
+trap:"A identifies the batch, not individual documents within it. C is Trap 8 — this field doesn't exist in the Batch API. D identifies error type but doesn't link a response back to the original request."},
+
+{id:37,scenario:3,domain:2,lesson:"2.1",
+stem:"extract_invoice connects to three invoice systems: SAP (dates: YYYY-MM-DD), Oracle (dates: DD/MM/YYYY), NetSuite (dates: MM-DD-YYYY). The agent frequently sends dates in the wrong format to each system. Where should the dialect guidance live?",
+options:["In the system prompt: 'When calling extract_invoice, use YYYY-MM-DD for SAP, DD/MM/YYYY for Oracle, and MM-DD-YYYY for NetSuite'","In the tool description for extract_invoice, specifying which date format each system variant requires","In a PostToolUse hook that normalises date formats in results before Claude sees them","In the input_schema for extract_invoice, using an enum of allowed format strings"],
+correct:1,
+explanation:"Tool-specific guidance belongs in the tool description, not the system prompt. This distinction has been tested multiple times. The system prompt is for agent-wide behaviour; the tool description is for everything specific to that tool.",
+trap:"A is Trap 2 — dialect and format guidance belongs in the tool description. C is Trap 9 — PostToolUse handles results coming back, not input formats going out. D is Trap 10 — enums constrain the value but the format guidance needs to be in the description."},
+
+{id:38,scenario:3,domain:5,lesson:"5.1",
+stem:"A synthesis agent receives 80,000 tokens of extracted invoice data. It reliably cites data from the first 15,000 and last 10,000 tokens but misses patterns in the middle 55,000 tokens. What is the most effective fix?",
+options:["Switch to a model with a larger context window to avoid the truncation effect","Stream invoice data to the synthesis agent incrementally to avoid presenting all 80,000 tokens at once","Place a key-findings summary at the top of the input and organise detailed data under explicit section headings","Use /compact to compress the middle 55,000 tokens before passing to the synthesis agent"],
+correct:2,
+explanation:"Lost-in-the-middle is a structural attention problem, not a capacity problem. Critical findings at the top, section headings throughout — this creates navigation anchors that the model can attend to regardless of position.",
+trap:"A is Trap 6 — a larger window holds more tokens but doesn't change attention distribution within them. B is Trap 2 — streaming changes delivery order but still puts 55K tokens somewhere in the middle. D is Trap 8 — /compact is a session command, not applicable to constructed prompt inputs."},
+
+{id:39,scenario:3,domain:4,lesson:"4.1",
+stem:"InvoiceAI's validation agent uses the instruction: 'Only flag invoices that seem problematic.' Post-launch, it flags 40% of invoices as 'potentially problematic' with vague rationale, creating reviewer fatigue. What is the root cause?",
+options:["The reporting threshold is set too low; raise it to surface only high-severity issues","The instruction is too vague — 'seems problematic' is not a criterion; replace with explicit categorical conditions such as: total doesn't match line items, vendor not on approved list, date outside current fiscal quarter","Add a confidence score to each flag so reviewers can prioritise their queue","Add few-shot examples of invoices that should and should not be flagged to calibrate the model's judgement"],
+correct:1,
+explanation:"'Seems problematic' is not an actionable criterion. The model has no explicit definition of what to flag, so it flags anything uncertain — which is a large portion of invoices. Explicit categorical criteria tell the model exactly what constitutes a flag-worthy condition.",
+trap:"A is Trap 6 — a probabilistic threshold change reduces the volume but doesn't make the remaining flags accurate. C is Trap 3 — confidence scores require review; fatigued reviewers won't engage with them. D is Trap 3 — examples help calibrate but don't define the standard."},
+
+{id:40,scenario:3,domain:5,lesson:"5.5",
+stem:"InvoiceAI processes 500 invoices daily: enterprise contracts (50, high financial risk), standard vendor invoices (350, low risk), expense reimbursements (100, moderate risk). The team can manually review 100 invoices per day. How should review capacity be allocated?",
+options:["Uniform random sample of 100 invoices across all categories proportional to neither risk nor volume","50 enterprise contracts (full coverage) + 30 expense reimbursements + 20 standard vendor invoices","100 invoices from whichever category showed the most unusual patterns this week","Proportional to document volume: 70 standard vendor + 20 expense + 10 enterprise"],
+correct:1,
+explanation:"When the stem labels segments by risk, allocate by risk. Full coverage of the small, high-risk set. Moderate sampling of the mid-risk set. Lightest sampling of the high-volume low-risk set. A proportional-to-volume approach (D) gives the fewest reviews to the highest-risk documents.",
+trap:"A is Trap 3 — random sampling sounds statistically principled but ignores the explicit risk labels. C is Trap 7 — pattern-based weekly allocation ignores structural risk. D inverts the correct priority — volume and risk are not the same thing."},
+
+{id:41,scenario:3,domain:2,lesson:"2.2",
+stem:"query_vendor_database returns {\"vendors\": [], \"status\": \"ok\"} both when a vendor genuinely has no invoices AND when the database connection fails. Agents tell customers 'No invoices found' when the database is actually down. What change correctly addresses this?",
+options:["Add a system prompt instruction: 'If the vendor list is empty, verify database connectivity before reporting to the customer'","Add a database health-check tool that the agent calls before every vendor query","Return isError: true with errorCategory: 'transient' on connection failure; return isError: false with an empty list when the vendor genuinely has no invoices","Add a PostToolUse hook that calls a health endpoint whenever the vendor result is empty"],
+correct:2,
+explanation:"The tool must distinguish 'found nothing' from 'couldn't look.' Structured isError with appropriate category communicates the distinction clearly and enables correct agent behaviour. This is the tool design fix — it belongs in the tool, not in wrappers around it.",
+trap:"A is Trap 6 — the prompt can't structurally distinguish the two cases. B is Trap 5 — redundant overhead on every query. D is Trap 2 — PostToolUse can observe but the distinction should be surfaced by the tool itself."},
+
+{id:42,scenario:3,domain:1,lesson:"1.6",
+stem:"An invoice review agent processes 20 invoices in one pass. Quality analysis: detailed findings for invoices 1–6, missed issues in 7–18, one pattern identified in invoice 19 but the identical pattern approved in invoice 20. What architectural fix addresses all three problems?",
+options:["Switch to a model with a larger context window to process all 20 invoices with full attention","Process invoices in batches of 6 in three sequential passes rather than all 20 at once","Run individual per-invoice passes first, then a separate cross-invoice integration pass","Add more detailed instructions about what to look for in invoices 7 through 20"],
+correct:2,
+explanation:"Per-invoice passes eliminate attention dilution — each invoice gets full focus. The cross-invoice pass catches pattern inconsistencies (like the invoice-19/20 discrepancy). Both are required. Batching into groups of 6 (B) still has attention dilution within each group and no cross-invoice comparison.",
+trap:"A is Trap 6 — attention dilution is not a capacity problem. B is Trap 10 — batching reduces but doesn't eliminate dilution, and provides no cross-file pass. D is Trap 6 — instructions don't fix attention distribution."},
+
+{id:43,scenario:3,domain:4,lesson:"4.3",
+stem:"InvoiceAI forces structured extraction using tool_choice. After deployment, extractions have valid JSON structure but incorrect values: totals that don't match line items, dates from the wrong field, plausible but wrong vendor names. What does tool_choice with a JSON schema enforce, and what does it not?",
+options:["It enforces both the structure and the semantic accuracy of extracted values","It enforces syntactic correctness — valid structure, correct types, required fields present — but does not prevent semantic errors like wrong values, misplaced data, or hallucinated content","It prevents hallucinations by grounding Claude's output in the document during extraction","It prevents all extraction errors except those caused by network failures or missing documents"],
+correct:1,
+explanation:"Schema eliminates syntax errors: invalid JSON, wrong field types, missing required fields. It cannot validate that the vendor name in position X matches the actual vendor in the document — that's a semantic check requiring a validator or a human audit.",
+trap:"A is the common misconception. C is Trap 7 — grounding is a separate concept unrelated to tool_choice mechanics. D is Trap 7 — schema correctness says nothing about semantic correctness."},
+
+{id:44,scenario:3,domain:5,lesson:"5.6",
+stem:"An InvoiceAI report states 'Average payment terms: 32 days.' This came from two sources: a 2024-Q1 accounting database showing 28 days and a 2024-Q3 vendor survey showing 36 days. The agent averaged them. What is the correct approach?",
+options:["Use the most recent source (2024-Q3 survey at 36 days) as it reflects current conditions","Use the accounting database as primary data is more reliable than survey data","Present both values with their sources, flag the conflict, and note the different methodologies and time periods","Report 32 days as a confidence-interval midpoint with ±4 days as the margin of error"],
+correct:2,
+explanation:"When two sources conflict, preserve both with full attribution. Flag the conflict explicitly. Note what explains the difference (methodology, time period). Never silently arbitrate between conflicting sources — the 32-day average is a number that doesn't correspond to either source.",
+trap:"A — recency isn't the only factor; different methodologies may produce genuinely different numbers. B — primary vs secondary data is one consideration, not a decision rule. D — averaging conflicting methodological data creates a fictional precision."},
+
+{id:45,scenario:3,domain:1,lesson:"1.2",
+stem:"A coordinator delegates contract extraction to a contract_specialist subagent. The specialist extracts payment terms successfully but times out before completing liability clauses. It returns {\"status\": \"failed\"}. The coordinator marks the task failed and discards the payment terms. What should the specialist have returned instead?",
+options:["{\"status\": \"complete\", \"payment_terms\": [...]} so the coordinator can use the partial result without confusion","{\"status\": \"partial\", \"completed\": [\"payment_terms\"], \"failed\": [\"liability_clauses\"], \"partial_results\": {...}, \"failure_type\": \"timeout\", \"alternative_approaches\": [\"retry with reduced scope\"]}","{\"status\": \"failed\", \"isRetryable\": true} so the coordinator knows to retry the full extraction","Return nothing; the coordinator should implement timeout detection and treat silence as a partial failure signal"],
+correct:1,
+explanation:"A structured subagent error report should include: status, failure_type, what was attempted, partial_results, and alternative approaches. This enables the coordinator to use completed work and decide on recovery — without discarding work that succeeded.",
+trap:"A marks partial as complete — hides the gap. C provides a retry signal but loses the completed payment terms. D is Trap 8 — silence as failure is an anti-pattern; the coordinator cannot distinguish timeout from network drop."},
+
+// ── SCENARIO 4 ──────────────────────────────
+{id:46,scenario:4,domain:2,lesson:"2.4",
+stem:"The Nexus research agent makes 8–12 exploratory tool calls before every research task: list_databases(), then describe_table() for each relevant table. This discovery overhead precedes every task. What is the correct fix?",
+options:["Add a system prompt instruction telling the agent to skip the discovery phase and query directly","Increase the number of available tools so the agent has more routing options to choose from directly","Expose the database schema and table catalog as an MCP Resource, discovered at connection time and available without tool calls","Cache list_databases() results in the coordinator and inject them into each subagent's prompt at task time"],
+correct:2,
+explanation:"MCP Resources are discovered at connection time — when the session starts, the client asks each MCP server what it exposes. Publishing the schema as a Resource eliminates all discovery overhead. The catalog is simply already there at the start of every task.",
+trap:"A is Trap 6 — probabilistic. B is Trap 7 — more tools makes selection harder, not easier. D is Trap 5 — works but adds coordinator complexity for something the MCP Resource pattern handles by design."},
+
+{id:47,scenario:4,domain:1,lesson:"1.2",
+stem:"Nexus uses hub-and-spoke architecture. A developer proposes allowing subagents to share findings directly with each other to reduce coordinator overhead. Three properties of the current design are cited in its defence. Which three are they?",
+options:["Speed, simplicity, and cost efficiency of the overall system","Observability, consistent error handling, and controlled information flow","Parallelism, fault tolerance, and horizontal scalability","Tool isolation, context compression, and automatic schema validation"],
+correct:1,
+explanation:"The three exam-specific rationale for hub-and-spoke: observability (the coordinator can see every exchange), consistent error handling (one place decides what to do when things fail), and controlled information flow (the coordinator decides what each specialist sees).",
+trap:"A — speed is actually reduced by the coordinator overhead (parallelism compensates, not the architecture). C — parallelism is achievable in both designs. D — these concepts exist but are not the hub-and-spoke rationale."},
+
+{id:48,scenario:4,domain:1,lesson:"1.2",
+stem:"The Nexus coordinator is configured with an AgentDefinition specifying its system prompt and tool list. When it attempts to spawn research subagents, nothing happens — the coordinator seems to request subagents but they are never created. What is the most likely cause?",
+options:["The coordinator's system prompt doesn't describe the multi-agent workflow clearly enough for Claude to follow","The subagents' AgentDefinitions haven't been registered in the research system's registry","allowedTools in the coordinator's AgentDefinition does not include 'Task'","The coordinator is using tool_choice: 'auto' instead of forcing the Task tool by name"],
+correct:2,
+explanation:"allowedTools must include 'Task' for the coordinator to spawn subagents. Without it, the coordinator physically cannot create subagents — it's a binary capability requirement, not a preference or configuration setting.",
+trap:"A is Trap 6 — the system prompt shapes behaviour probabilistically; a missing capability is a hard failure not a guidance issue. B is Trap 5 — no such registration mechanism is described. D is Trap 7 — tool_choice affects which tool is selected, not whether a capability exists."},
+
+{id:49,scenario:4,domain:2,lesson:"2.4",
+stem:"Nexus wants to connect to: (1) a shared academic database for the whole team, (2) a shared patent search API for the whole team, (3) one developer's personal experimental web scraper. Which MCP configuration files are correct?",
+options:["All three in .mcp.json — project-level config is the standard for all MCP connections","Academic database and patent API in .mcp.json; personal web scraper in ~/.claude.json","Academic database in .mcp.json; patent API and personal scraper both in ~/.claude.json","All three in ~/.claude.json — MCP configuration should be personal to prevent accidental team sharing"],
+correct:1,
+explanation:".mcp.json (project root) = shared with the team on clone. ~/.claude.json (personal) = yours only. Classify each server by audience before choosing the file. Both team-wide servers go in .mcp.json; the personal server goes in the personal file.",
+trap:"A shares the personal scraper with the whole team. C incorrectly puts the patent API (team-wide) in the personal file. D puts all team-wide servers in personal config."},
+
+{id:50,scenario:4,domain:5,lesson:"5.2",
+stem:"A Nexus research agent is helping a client with competitive landscape analysis. The client asks: 'Based on everything you've found, which competitor should we acquire?' This is outside the service's defined scope (research data, not strategic recommendations). The client insists after the agent declines once. What is the correct agent response?",
+options:["Escalate to a human researcher because the client's insistence signals genuine strategic urgency","Escalate to a human because the implied acquisition value likely exceeds any autonomous decision threshold","Maintain the scope boundary: decline clearly, explain what the agent can provide (research data to inform the decision), and offer to produce that analysis","Provide the strategic recommendation since the agent has all the research data needed to support it"],
+correct:2,
+explanation:"This is a scope clarification, not an escalation trigger. The agent CAN do something: produce research data that informs a human's acquisition decision. It should decline the out-of-scope request clearly, explain what it can do, and offer that. Having data doesn't confer authority to make strategic recommendations.",
+trap:"A — insistence is not an escalation trigger. B — implied value is not an escalation trigger. D — having the data ≠ having the authority or scope."},
+
+{id:51,scenario:4,domain:5,lesson:"5.1",
+stem:"A Nexus research agent handles multi-session investigations for ongoing client engagements. Across sessions, it repeatedly loses track of specific facts established earlier — client IDs, confirmed research parameters, key findings. Each session requires re-establishing these facts from scratch. What is the most effective fix?",
+options:["Use --resume to restore the previous session's context at the start of each new session","Maintain a persistent case-facts block — structured key information injected at the start of every session prompt and updated when new facts emerge","Use /compact at the end of each session to compress and save key findings for next time","Increase the context window allocation to accommodate multiple sessions' worth of conversation history"],
+correct:1,
+explanation:"The persistent case-facts block — client ID, research parameters, confirmed findings — is injected at the start of every session prompt as a structured, non-summarisable block. It preserves exact facts across sessions regardless of how sessions end.",
+trap:"A — --resume restores full conversation history including stale tool results; after any data changes, it's not appropriate. C — /compact loses exact detail by design. D — context windows don't span separate sessions."},
+
+{id:52,scenario:4,domain:1,lesson:"1.7",
+stem:"Two competing research approaches are compared using fork_session from a shared baseline analysis. After 30 minutes of parallel investigation, a key data source referenced by both branches becomes unavailable. Which statement is correct?",
+options:["fork_session includes automatic staleness detection and will alert both branches when shared context becomes invalid","Both branches inherit the stale reference from the fork point; neither can automatically detect the external change","The branch that first discovers the unavailability can alert the other branch through the coordinator's shared context","Run /compact in both branches to refresh their awareness of available external data sources"],
+correct:1,
+explanation:"fork_session inherits whatever context existed at the fork point. Both branches were created before the data source became unavailable. There is no mechanism for detecting external state changes in forked branches — each branch simply has stale references.",
+trap:"A is Trap 8 — no such staleness detection exists. C is Trap 8 — forked branches do not communicate with each other. D is wrong — /compact summarises conversation content; it doesn't poll external services."},
+
+{id:53,scenario:4,domain:5,lesson:"5.5",
+stem:"Nexus reports 94% overall extraction accuracy across 5,000 research documents. After deployment, a major client complains that patent extractions are regularly wrong. An audit shows: general article accuracy 97%, patent accuracy 51%. What does this illustrate and what is the fix?",
+options:["The 94% aggregate figure is misleading — segment accuracy by document type, then allocate human review and improvement effort proportional to each type's error rate","The patent sample is too small to be statistically significant; gather more data before acting","Patent documents require specialist domain knowledge; switch to a patent-specific language model","Lower the accuracy threshold uniformly so more errors surface across all document types for review"],
+correct:0,
+explanation:"Aggregate accuracy hides per-segment failures. 94% overall is dominated by high-volume general articles at 97%. The 5% of patents at 51% accuracy are invisible in the average. Always segment by document type before trusting an overall accuracy figure.",
+trap:"B — the audit already shows 51% on a real dataset; that's sufficient to act. C is Trap 5 — over-engineering before understanding root cause. D is Trap 6 — surfacing more errors doesn't fix the extraction."},
+
+{id:54,scenario:4,domain:1,lesson:"1.5",
+stem:"Research subagents return results in inconsistent formats — different date representations, citation styles, and unit conventions — from different underlying tools. The coordinator needs these normalised before Claude processes the results. Which hook implements this correctly?",
+options:["A PreToolUse hook on the Task tool that normalises inputs before each subagent is created","A PostToolUse hook on the Task tool that normalises subagent results before the coordinator processes them","A SubagentStop hook that blocks completion until the subagent reformats its own output","A SubagentStart hook that injects normalisation instructions when the subagent begins"],
+correct:1,
+explanation:"PostToolUse fires after the tool runs but before Claude sees the result — the exact moment for normalisation. It can transform results. PostToolUse on the Task tool intercepts what the subagent returns before the coordinator processes it.",
+trap:"A fires before the subagent runs (wrong timing for normalising results). C — SubagentStop can block but cannot transform output. D — SubagentStart can add context but cannot guarantee the output format of what the subagent later produces."},
+
+{id:55,scenario:4,domain:2,lesson:"2.1",
+stem:"The research system has three tools: analyze_literature (\"Analyses content\"), extract_citations (\"Extracts data\"), search_patents (\"Searches patents\"). The agent frequently routes literature analysis tasks to extract_citations. What is the most likely cause and correct fix?",
+options:["Merge analyze_literature and extract_citations into a single combined_analysis tool to eliminate the selection confusion","Rewrite analyze_literature's description to specify exactly what it does, when to use it, and explicitly when to use extract_citations instead","Add a classifier subagent that routes requests to the correct tool before the main agent sees them","Add few-shot examples in the system prompt showing the correct tool for each request type"],
+correct:1,
+explanation:"The tool description is the primary selection mechanism. Generic, overlapping descriptions ('Analyses content' and 'Extracts data') cause misrouting. The fix is description quality — especially the 'when NOT to use this, and what to use instead' component that the exam rewards.",
+trap:"A is Trap 5 — merging tools makes selection harder, not easier. C is Trap 5 — a classifier adds complexity when the fix is documentation. D is Trap 3 — examples in the system prompt help but don't fix description quality, which is the root cause."},
+
+{id:56,scenario:4,domain:1,lesson:"1.3",
+stem:"A coordinator delegates summarisation to a summary_subagent, passing {\"content\": \"<full extracted text>\"}. The final summary contains no citations or source URLs, despite sources being clearly present in the extracted text. What is the root cause?",
+options:["The summary_subagent needs a query_sources tool to retrieve citations independently","The coordinator passed content but not the source URLs; the subagent can only cite what it receives in its task prompt","The summary_subagent's system prompt doesn't include an instruction to preserve citations","The PostToolUse normalisation hook stripped citation data from the tool result before the subagent received it"],
+correct:1,
+explanation:"The subagent can only work with what appears in its task prompt. The coordinator had the source URLs but didn't include them in the payload it passed. Explicit context injection is the mechanic — the coordinator must include everything the subagent needs to do its job.",
+trap:"A is Trap 5 — adds overhead for information the coordinator already has. C is Trap 6 — a system prompt instruction won't help if the citations weren't in the input. D is Trap 4 — the stem doesn't mention normalisation hooks."},
+
+{id:57,scenario:4,domain:5,lesson:"5.3",
+stem:"Three research subagents report: academic databases return 47 papers (success), patent databases return 'Connection timeout after 30s', industry reports return 0 results. How should the coordinator handle these three distinct outcomes?",
+options:["Treat all three as requiring retry — any non-positive result (empty or error) warrants a retry attempt","Treat the patent timeout as a transient failure (retry decision needed), the industry 0-result as a valid finding (no relevant reports exist), and the academic results as successful data","Treat the empty industry result as a potential access failure and retry all three consistently","Surface all three to the client as failures and ask them to decide which sources to retry"],
+correct:1,
+explanation:"Each outcome requires different handling: timeout = transient failure (retry is warranted); 0 results = valid empty result ('found nothing' is an answer, not a failure); 47 papers = success. The coordinator must apply different logic to each category.",
+trap:"A conflates empty results with failures — 0 results is information. C is Trap 6 — retrying the successful academic query wastefully; 0 industry results is a legitimate answer. D is Trap 5 — the coordinator should make this determination, not the client."},
+
+{id:58,scenario:4,domain:3,lesson:"3.1",
+stem:"Nexus has a rule in the project CLAUDE.md: 'Never include client-identifying information in any log file.' The rule must hold in every session for every team member, with no exceptions. It is violated in 3% of sessions. What is the root cause and correct fix?",
+options:["Move the rule from project-level to user-level ~/.claude/CLAUDE.md for stronger personal enforcement","CLAUDE.md is probabilistic; enforce the rule via a PostToolUse hook on the logging tool that strips client identifiers before writing","Strengthen the CLAUDE.md instruction with explicit examples of what constitutes client-identifying information","Create a /compliant-logging skill that all team members invoke before any logging session"],
+correct:1,
+explanation:"'Must hold with no exceptions' = deterministic enforcement. CLAUDE.md is probabilistic by design — Claude reads it alongside everything else and weighs it; contradictions may resolve arbitrarily. A hook at the logging tool boundary enforces deterministically regardless of what Claude decided.",
+trap:"A is Trap 1 — user-level has narrower scope (not all team members) and is still probabilistic. C is Trap 6 — examples reduce rate, never to 0%. D is Trap 6 — skills are task-triggered, not automatic."},
+
+{id:59,scenario:4,domain:4,lesson:"4.3",
+stem:"The research agent routes to four tools: one per document type. When documents of unknown or mixed type arrive, the team proposes merging all four into a single research_any tool with a generic input schema. Why is this problematic?",
+options:["A single tool creates a bottleneck — running four tools in parallel would be faster for mixed-type batches","Merging into one tool with a single generic schema weakens per-type guarantees — every type-specific field becomes optional, removing the ability to enforce per-type structure","The merged tool description will be longer and therefore harder for Claude to parse and use effectively","The recommended ceiling is 4–5 tools per agent; merging reduces the count unnecessarily"],
+correct:1,
+explanation:"A tool has one input_schema. A generic schema accommodating four document types means every type-specific field goes optional — schema enforcement no longer guarantees anything type-specific. The correct solution for unknown type is tool_choice: 'any', letting the model choose the right per-type schema.",
+trap:"A is Trap 7 — parallelism is a separate concern. C is Trap 7 — description length is manageable. D is Trap 7 — 4–5 is a ceiling, not a target."},
+
+{id:60,scenario:4,domain:5,lesson:"5.2",
+stem:"During a research session, a Nexus client says: 'I want to speak with a researcher directly. Can you connect me with someone?' What is the correct agent response?",
+options:["Acknowledge the request and attempt to fulfil the research need more thoroughly before escalating","Assess whether the client's request reflects genuine dissatisfaction or is a casual preference before deciding","Escalate immediately to connect the client with a human researcher — an explicit request for a human is a mandatory escalation trigger","Ask the client to clarify whether they prefer a human or whether an automated research summary would meet their need"],
+correct:2,
+explanation:"An explicit request for a human is a mandatory escalation trigger — escalate immediately without assessment. This is the clearest of the three valid triggers. Adding an assessment step or asking for clarification adds unnecessary friction to an explicit, clear request.",
+trap:"A adds a step before acting on an explicit trigger — wrong. B — assessing 'genuine' dissatisfaction delays acting on an explicit request. D — the client was explicit; asking for clarification signals that the agent didn't hear them."}
+];
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let currentQ = 0;
+let answers = new Array(60).fill(null);
+let flagged = new Array(60).fill(false);
+let timerInterval = null;
+let secondsLeft = 120 * 60;
+let reviewFilter = 'all';
+
+/* ══════════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════════ */
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      finishExam();
+    }
+  }, 1000);
+}
+function updateTimerDisplay() {
+  const h = Math.floor(secondsLeft / 3600);
+  const m = Math.floor((secondsLeft % 3600) / 60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer';
+  if (secondsLeft < 300) el.classList.add('danger');
+  else if (secondsLeft < 600) el.classList.add('warn');
+}
+
+/* ══════════════════════════════════════════════
+   NAV GRID
+══════════════════════════════════════════════ */
+function buildNavGrid() {
+  const wrap = document.getElementById('nav-grid-wrap');
+  wrap.innerHTML = '';
+  [1,2,3,4].forEach(sc => {
+    const qs = QUESTIONS.filter(q => q.scenario === sc);
+    const label = document.createElement('div');
+    label.className = 'nav-section-label';
+    label.textContent = `Scenario ${sc}`;
+    wrap.appendChild(label);
+    const grid = document.createElement('div');
+    grid.className = 'nav-grid';
+    qs.forEach(q => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-btn';
+      btn.id = `nav-${q.id}`;
+      btn.textContent = q.id;
+      btn.onclick = () => goTo(q.id - 1);
+      grid.appendChild(btn);
+    });
+    wrap.appendChild(grid);
+  });
+  updateNavGrid();
+}
+function updateNavGrid() {
+  QUESTIONS.forEach((q, i) => {
+    const btn = document.getElementById(`nav-${q.id}`);
+    if (!btn) return;
+    btn.className = 'nav-btn';
+    if (flagged[i]) btn.classList.add('flagged');
+    else if (answers[i] !== null) btn.classList.add('answered');
+    if (i === currentQ) btn.classList.add('current');
+  });
+  const count = answers.filter(a => a !== null).length;
+  document.getElementById('answered-count').textContent = count;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER QUESTION
+══════════════════════════════════════════════ */
+function renderQuestion(idx) {
+  const q = QUESTIONS[idx];
+  const sc = SCENARIOS[q.scenario];
+  document.getElementById('q-counter').textContent = `Q ${q.id} of 60`;
+  document.getElementById('domain-tag').textContent = `D${q.domain}`;
+  const flagBtn = document.getElementById('flag-btn');
+  flagBtn.className = 'btn-flag' + (flagged[idx] ? ' active' : '');
+
+  const nextBtn = document.getElementById('btn-next');
+  const isLast = idx === 59;
+  nextBtn.textContent = isLast ? 'Finish Exam' : 'Next →';
+  nextBtn.className = 'btn-nav ' + (isLast ? 'btn-finish' : 'btn-next');
+
+  let html = `
+    <div class="scenario-box">
+      <strong>${sc.name}</strong>
+      ${sc.context}
+    </div>
+    <div class="question-stem">${q.stem}</div>
+    <div class="options">
+  `;
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, oi) => {
+    const sel = answers[idx] === oi ? ' selected' : '';
+    html += `
+      <button class="option-btn${sel}" onclick="selectAnswer(${oi})">
+        <span class="opt-letter">${letters[oi]}</span>
+        <span class="opt-text">${opt}</span>
+      </button>
+    `;
+  });
+  html += `</div>`;
+  document.getElementById('exam-content').innerHTML = html;
+  updateNavGrid();
+  document.querySelector('.exam-main').scrollTop = 0;
+}
+
+function selectAnswer(oi) {
+  answers[currentQ] = oi;
+  renderQuestion(currentQ);
+}
+function toggleFlag() {
+  flagged[currentQ] = !flagged[currentQ];
+  renderQuestion(currentQ);
+}
+function goTo(idx) {
+  if (idx < 0 || idx >= 60) return;
+  currentQ = idx;
+  renderQuestion(currentQ);
+}
+function nextOrFinish() {
+  if (currentQ === 59) finishExam();
+  else goTo(currentQ + 1);
+}
+
+/* ══════════════════════════════════════════════
+   START / FINISH
+══════════════════════════════════════════════ */
+function startExam() {
+  answers = new Array(60).fill(null);
+  flagged = new Array(60).fill(false);
+  currentQ = 0;
+  secondsLeft = 120 * 60;
+  showScreen('exam-screen');
+  buildNavGrid();
+  renderQuestion(0);
+  startTimer();
+}
+function finishExam() {
+  clearInterval(timerInterval);
+  showScreen('results-screen');
+  renderResults();
+}
+function retryExam() {
+  startExam();
+}
+
+/* ══════════════════════════════════════════════
+   RESULTS
+══════════════════════════════════════════════ */
+function renderResults() {
+  let correct = 0;
+  const domainCorrect = {1:0,2:0,3:0,4:0,5:0};
+  const domainTotal = {1:0,2:0,3:0,4:0,5:0};
+  QUESTIONS.forEach((q, i) => {
+    domainTotal[q.domain]++;
+    if (answers[i] === q.correct) { correct++; domainCorrect[q.domain]++; }
+  });
+  const pct = Math.round((correct / 60) * 100);
+  const score1000 = Math.round(pct * 10);
+  const pass = pct >= 72;
+
+  document.getElementById('score-pct').textContent = `${correct}`;
+  document.getElementById('score-out').textContent = `/ 60`;
+  document.getElementById('results-title').textContent = `${pct}% — ${score1000} / 1000`;
+  const verdict = document.getElementById('results-verdict');
+  verdict.textContent = pass ? '✓ PASS' : '✗ BELOW PASSING';
+  verdict.className = 'results-verdict ' + (pass ? 'pass' : 'fail');
+  document.getElementById('results-subtext').textContent = pass
+    ? `Passing threshold is 720/1000. Gate target for this exam: ≥ 80% (48/60).`
+    : `Passing threshold is 720/1000. ${correct} correct, ${60 - correct} missed.`;
+
+  const ring = document.getElementById('score-ring');
+  ring.className = 'score-ring ' + (pass ? 'pass' : 'fail');
+  const circ = 2 * Math.PI * 43;
+  const fill = document.getElementById('ring-fill');
+  fill.setAttribute('stroke-dasharray', circ);
+  fill.setAttribute('stroke-dashoffset', circ * (1 - pct / 100));
+
+  const dnames = {1:'D1 — Agentic Architecture',2:'D2 — Tool Design & MCP',3:'D3 — Claude Code Config',4:'D4 — Prompt Engineering',5:'D5 — Context Management'};
+  let html = '';
+  [1,2,3,4,5].forEach(d => {
+    const c = domainCorrect[d]; const t = domainTotal[d]; const p = Math.round((c/t)*100);
+    const color = p >= 80 ? 'var(--correct)' : p >= 60 ? 'var(--warn)' : 'var(--wrong)';
+    html += `<div class="domain-result-row">
+      <span class="dname">${dnames[d]}</span>
+      <span class="dscore">${c}/${t}</span>
+      <div class="dr-bar"><div class="dr-fill" style="width:${p}%;background:${color}"></div></div>
+      <span class="dr-pct">${p}%</span>
+    </div>`;
+  });
+  document.getElementById('domain-breakdown').innerHTML = html;
+}
+
+function showResults() {
+  showScreen('results-screen');
+}
+
+/* ══════════════════════════════════════════════
+   REVIEW
+══════════════════════════════════════════════ */
+function showReview(filter) {
+  reviewFilter = filter;
+  showScreen('review-screen');
+  renderReview();
+}
+function setFilter(f) {
+  reviewFilter = f;
+  ['all','wrong','correct'].forEach(x => {
+    document.getElementById('f-'+x).className = 'filter-btn' + (f===x?' active':'');
+  });
+  renderReview();
+}
+function renderReview() {
+  const letters = ['A','B','C','D'];
+  const body = document.getElementById('review-body');
+  let html = '';
+  QUESTIONS.forEach((q, i) => {
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (reviewFilter === 'wrong' && isCorrect) return;
+    if (reviewFilter === 'correct' && !isCorrect) return;
+    let optsHtml = '';
+    q.options.forEach((opt, oi) => {
+      let cls = '';
+      if (oi === q.correct) cls = 'correct-answer';
+      else if (oi === userAns && !isCorrect) cls = 'user-wrong';
+      optsHtml += `<div class="ri-opt ${cls}"><span class="ri-letter">${letters[oi]}</span><span>${opt}</span></div>`;
+    });
+    const unanswered = userAns === null;
+    html += `<div class="review-item">
+      <div class="review-item-header">
+        <span class="q-num">Q${q.id}</span>
+        <span class="ri-domain">D${q.domain} · ${q.lesson}</span>
+        <span class="ri-status ${isCorrect?'correct':'wrong'}">${unanswered?'Skipped':isCorrect?'✓ Correct':'✗ Missed'}</span>
+      </div>
+      <div class="review-item-body">
+        <div class="ri-stem">${q.stem}</div>
+        <div class="ri-options">${optsHtml}</div>
+        <div class="ri-explanation">
+          <strong>Explanation</strong>
+          ${q.explanation}
+          <div class="ri-trap"><strong>Trap pattern: </strong>${q.trap}</div>
+        </div>
+      </div>
+    </div>`;
+  });
+  body.innerHTML = html || '<p style="color:var(--text3);padding:1rem">No questions match this filter.</p>';
+}
+
+/* ══════════════════════════════════════════════
+   SCREEN MANAGEMENT
+══════════════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>
