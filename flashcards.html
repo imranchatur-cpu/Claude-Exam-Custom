@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Architect Foundations — Flashcards</title>
+<style>
+:root {
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --surface2: #F0F2F7;
+  --border: #DDE1EC;
+  --text: #151820;
+  --text2: #4A5068;
+  --text3: #8891AA;
+  --accent: #3B6BF5;
+  --accent-dim: #EEF2FF;
+  --correct: #1DB87A;
+  --correct-dim: #EAFAF3;
+  --wrong: #D94545;
+  --wrong-dim: #FDEAEA;
+  --warn: #E07B00;
+  --warn-dim: #FEF3E2;
+  --shadow: 0 1px 4px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,.12);
+  --radius: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1117; --surface: #181C28; --surface2: #1E2235; --border: #2A2E42;
+    --text: #E4E8F5; --text2: #9198B4; --text3: #5C6280;
+    --accent: #4F7EFF; --accent-dim: #1A2240;
+    --correct: #2ECC8A; --correct-dim: #0D2A20;
+    --wrong: #E05252; --wrong-dim: #2A0F0F;
+    --warn: #F5A623; --warn-dim: #2A1E05;
+    --shadow: 0 1px 4px rgba(0,0,0,.3); --shadow-lg: 0 8px 30px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1117; --surface: #181C28; --surface2: #1E2235; --border: #2A2E42;
+  --text: #E4E8F5; --text2: #9198B4; --text3: #5C6280;
+  --accent: #4F7EFF; --accent-dim: #1A2240;
+  --correct: #2ECC8A; --correct-dim: #0D2A20;
+  --wrong: #E05252; --wrong-dim: #2A0F0F;
+  --warn: #F5A623; --warn-dim: #2A1E05;
+  --shadow: 0 1px 4px rgba(0,0,0,.3); --shadow-lg: 0 8px 30px rgba(0,0,0,.45);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.5rem 1rem 3rem;
+}
+.wrap { width: 100%; max-width: 760px; }
+
+/* ── HEADER ── */
+header { margin-bottom: 1.25rem; }
+.badge {
+  display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent); background: var(--accent-dim);
+  padding: .25rem .6rem; border-radius: 3px; margin-bottom: .75rem;
+}
+h1 { font-size: 1.45rem; font-weight: 800; line-height: 1.2; margin-bottom: .35rem; }
+.sub { color: var(--text2); font-size: .9rem; }
+.sub b { color: var(--text); }
+
+/* ── FILTER CHIPS ── */
+.filters { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1.1rem 0 .6rem; }
+.chip {
+  font-size: .8rem; font-weight: 600; padding: .35rem .7rem; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text2);
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip.star.active { background: var(--warn); border-color: var(--warn); }
+.chip.star { color: var(--warn); border-color: var(--warn); }
+.chip.star:hover { background: var(--warn-dim); }
+.chip .cnt { opacity: .65; font-variant-numeric: tabular-nums; margin-left: .25rem; }
+
+/* ── PROGRESS ── */
+.progress-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; font-size: .8rem; color: var(--text3); }
+.pbar { flex: 1; height: 6px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+.pfill { height: 100%; background: var(--correct); border-radius: 4px; width: 0; transition: width .3s ease; }
+.progress-row .known { color: var(--correct); font-weight: 700; }
+.reset-link { color: var(--text3); text-decoration: underline; cursor: pointer; font-size: .75rem; }
+.reset-link:hover { color: var(--wrong); }
+
+/* ── CARD ── */
+.card-outer { perspective: 1600px; margin-bottom: 1rem; }
+.card {
+  position: relative; width: 100%; min-height: 340px;
+  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.4,.2,.2,1);
+  cursor: pointer;
+}
+.card.flipped { transform: rotateY(180deg); }
+.face {
+  position: absolute; inset: 0; backface-visibility: hidden;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  box-shadow: var(--shadow-lg); padding: 1.75rem; display: flex; flex-direction: column;
+}
+.face.back { transform: rotateY(180deg); }
+.card-meta { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.tag {
+  font-size: .68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: .18rem .5rem; border-radius: 3px;
+}
+.tag.dom { background: var(--accent-dim); color: var(--accent); }
+.tag.les { background: var(--surface2); color: var(--text3); }
+.tag.repeat { background: var(--warn-dim); color: var(--warn); }
+.tag.miss { background: var(--wrong-dim); color: var(--wrong); }
+.tag.ref { background: var(--correct-dim); color: var(--correct); }
+.tag.known-mark { margin-left: auto; color: var(--correct); font-weight: 700; font-size: .72rem; }
+.face-label { font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: .6rem; }
+.q { font-size: 1.12rem; font-weight: 600; line-height: 1.5; color: var(--text); }
+.face.front .q { display: flex; align-items: center; flex: 1; }
+.a { font-size: .98rem; line-height: 1.6; color: var(--text); overflow-y: auto; flex: 1; }
+.a .lead { font-weight: 700; color: var(--correct); display: block; margin-bottom: .5rem; }
+.a .why { color: var(--text2); font-size: .9rem; display: block; margin-top: .65rem; padding-top: .65rem; border-top: 1px solid var(--border); }
+.a ul { margin: .4rem 0 .4rem 1.1rem; }
+.a li { margin-bottom: .25rem; }
+.a code, .q code {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+  padding: .05rem .3rem; font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: .82em; color: var(--text);
+}
+.a .warnote { color: var(--warn); font-weight: 600; }
+.flip-hint { font-size: .72rem; color: var(--text3); text-align: center; margin-top: .9rem; }
+
+/* ── CONTROLS ── */
+.controls { display: flex; gap: .6rem; margin-bottom: .6rem; }
+.btn {
+  padding: .6rem 1rem; border-radius: var(--radius); font-size: .88rem; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2);
+  transition: all .15s; flex: 1;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { opacity: .9; color: #fff; }
+.mark-row { display: flex; gap: .6rem; }
+.btn.again { color: var(--wrong); border-color: var(--wrong); flex: 1; }
+.btn.again:hover { background: var(--wrong-dim); }
+.btn.got { color: var(--correct); border-color: var(--correct); flex: 1; }
+.btn.got:hover { background: var(--correct-dim); }
+.counter { text-align: center; font-size: .82rem; color: var(--text3); margin-bottom: .75rem; font-variant-numeric: tabular-nums; }
+.counter b { color: var(--text2); }
+.empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: .95rem; }
+.kbd-hint { text-align: center; font-size: .72rem; color: var(--text3); margin-top: 1.25rem; }
+.kbd-hint kbd {
+  background: var(--surface2); border: 1px solid var(--border); border-bottom-width: 2px;
+  border-radius: 4px; padding: .05rem .35rem; font-size: .9em; font-family: inherit; color: var(--text2);
+}
+footer { margin-top: 1.5rem; font-size: .78rem; color: var(--text3); text-align: center; }
+footer a { color: var(--accent); text-decoration: none; }
+@media (max-width: 560px) {
+  .q { font-size: 1rem; } .face { padding: 1.25rem; } .card { min-height: 380px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="badge">CCA-F · Exam Fri 28 Aug 2026</span>
+  <h1>Architect Foundations — Retrieval Deck</h1>
+  <p class="sub">Built from every assessment 02–23 Aug. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. Weighted to <b>D1</b> (weakest, 27% of the exam) and the <b>four repeat concepts</b> that have beaten you twice.</p>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<div class="progress-row">
+  <span>Known <span class="known" id="known-n">0</span>/<span id="filt-n">0</span></span>
+  <span class="pbar"><span class="pfill" id="pfill"></span></span>
+  <span class="reset-link" id="reset">reset progress</span>
+</div>
+
+<div class="counter" id="counter"></div>
+
+<div class="card-outer" id="card-outer">
+  <div class="card" id="card" onclick="flip()">
+    <div class="face front">
+      <div class="card-meta" id="meta-front"></div>
+      <div class="face-label">Trigger / Scenario</div>
+      <div class="q" id="front-q"></div>
+      <div class="flip-hint">click, or press <b>Space</b>, to reveal</div>
+    </div>
+    <div class="face back">
+      <div class="card-meta" id="meta-back"></div>
+      <div class="face-label">The discriminator</div>
+      <div class="a" id="back-a"></div>
+    </div>
+  </div>
+</div>
+<div class="empty" id="empty" style="display:none">No cards marked as still-needed in this deck. 🎯<br>Switch filter or reset progress.</div>
+
+<div class="controls">
+  <button class="btn" onclick="prev()">← Prev</button>
+  <button class="btn primary" onclick="flip()">Flip</button>
+  <button class="btn" onclick="next()">Next →</button>
+</div>
+<div class="mark-row">
+  <button class="btn again" onclick="mark(false)">↻ Review again</button>
+  <button class="btn got" onclick="mark(true)">✓ Got it</button>
+</div>
+
+<div class="kbd-hint">
+  <kbd>←</kbd> <kbd>→</kbd> move · <kbd>Space</kbd> flip · <kbd>G</kbd> got it · <kbd>A</kbd> again · <kbd>S</kbd> shuffle
+</div>
+
+<footer>
+  Focus areas: D1 hooks &amp; multi-agent · tool description vs system prompt · CI criteria &amp; <code>-p</code> · stratified sampling · Batches API<br>
+  <a href="index.html">← Back to Mock Exam 3</a>
+</footer>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   CARDS — every struggle area across assessments 02–23 Aug 2026
+   tag: repeat = beaten twice (highest EV) · miss = missed on 08-23
+   · ref = reference/cheat-sheet · core = foundational
+══════════════════════════════════════════════════════════════ */
+const CARDS = [
+/* ───────── ★ THE FOUR REPEATS (highest EV) ───────── */
+{id:"r1",dom:"D3",les:"3.6",tags:["repeat"],
+ q:`A CI job runs <code>claude -p "verify the docs match the code"</code> and reports 100% compliance every run, but manual audits keep finding gaps. Root cause?`,
+ a:`<span class="lead">No explicit validation criteria — Claude does a shallow check and reports a confident, inaccurate pass.</span>A check that never fails isn't checking. Define what "documented/compliant" concretely means.<span class="why">Trap: <code>-p</code> does <b>not</b> restrict file access (it's non-interactive mode), and <code>--output-format json</code> shapes output, not analysis quality. A second Claude reading the same vague prompt draws the same wrong conclusion.</span>`},
+{id:"r2",dom:"D2",les:"2.1",tags:["repeat"],
+ q:`An agent sends dates/SQL/units in the wrong format to a specific system (e.g. SAP wants YYYY-MM-DD, Oracle wants DD/MM/YYYY). Where does the format guidance belong?`,
+ a:`<span class="lead">In the tool DESCRIPTION for that tool.</span>Tool-specific dialect, date format, and syntax always live in the description. The system prompt is for agent-wide behaviour only.<span class="why">Trap (right idea, wrong layer): a <code>PostToolUse</code> hook fixes results coming <b>back</b>, not inputs going <b>out</b>. An <code>enum</code> in the schema constrains the value but doesn't teach the per-system rule.</span>`},
+{id:"r3",dom:"D5",les:"5.5",tags:["repeat"],
+ q:`500 docs/day: 50 high-risk enterprise, 350 low-risk standard, 100 moderate expense. You can review 100/day. How do you allocate?`,
+ a:`<span class="lead">Allocate by RISK — full coverage of the small high-risk set first.</span>e.g. all 50 enterprise + 30 expense + 20 standard. Stratified sampling by risk, not by volume.<span class="why">Trap: "proportional to volume" gives the <b>fewest</b> reviews to the highest-risk docs. Random sampling sounds principled but ignores the explicit risk labels. Volume ≠ risk.</span>`},
+{id:"r4",dom:"D1",les:"1.2",tags:["repeat","miss"],
+ q:`A subagent extracts payment terms successfully but times out before the liability clauses. What should it return to the coordinator?`,
+ a:`<span class="lead">A structured partial report — never discard the work that succeeded.</span><code>{status:"partial", completed:["payment_terms"], failed:["liability_clauses"], partial_results:{...}, failure_type:"timeout", alternative_approaches:["retry with reduced scope"]}</code><span class="why">Trap: returning <code>{status:"failed"}</code> throws away the terms it did extract. <code>isRetryable:true</code> alone still loses the completed work. Silence-as-failure can't tell a timeout from a network drop.</span>`},
+
+/* ───────── D1 — AGENTIC ARCHITECTURE (weakest, 27%) ───────── */
+{id:"d1a",dom:"D1",les:"1.5",tags:["miss"],
+ q:`A compliance rule: a risk classification must be logged BEFORE any subagent is created. Which hook + attachment point does this deterministically?`,
+ a:`<span class="lead">A <code>PreToolUse</code> hook on the Task tool.</span>Coordinators spawn subagents by calling the Task tool, so <code>PreToolUse</code> on Task is the earliest deterministic point — it fires before the subagent exists and Claude cannot bypass it.<span class="why">Trap: there is <b>no blocking "SubagentStart" hook</b>. <code>SubagentStop</code> fires after the subagent finishes (too late). A system-prompt instruction is probabilistic.</span>`},
+{id:"d1b",dom:"D1",les:"1.7",tags:["miss"],
+ q:`You <code>--resume</code> a session from yesterday, but the file structure was heavily refactored this morning. Correct approach?`,
+ a:`<span class="lead">Start a fresh session and inject a structured summary of yesterday's findings as opening context.</span>This keeps the knowledge without the stale file references.<span class="why">Trap: both <code>--resume</code> AND <code>fork_session</code> carry stale tool results from before the refactor. <code>/compact</code> summarises the conversation but doesn't refresh external file knowledge. A new system-prompt description doesn't override stale tool results.</span>`},
+{id:"d1c",dom:"D1",les:"1.7",tags:["core"],
+ q:`What exactly does <code>fork_session</code> do, and what happens if a shared data source dies after two branches fork from a baseline?`,
+ a:`<span class="lead">It creates independent branches from a shared point-in-time baseline.</span>After the fork the branches diverge and share <b>no live state</b> — work in one is invisible to the other. Each retains whatever was in context at fork time.<span class="why">So on an outage: each branch keeps the baseline it already loaded, neither can re-fetch, and neither branch's new findings propagate to the other. The correct statement is always the one asserting branch <b>independence</b>.</span>`},
+{id:"d1d",dom:"D1",les:"1.5",tags:["core"],
+ q:`PreToolUse vs PostToolUse — which can prevent an action, and what is the other one for?`,
+ a:`<span class="lead">Only <code>PreToolUse</code> can BLOCK (it fires before the tool runs).</span><code>PostToolUse</code> fires <b>after</b> execution — by then the action already happened. Its job is reacting to / normalising the result on the way back to the model.<span class="why">To stop a $650 refund or a merge, gate it with PreToolUse. A PostToolUse "alert" on a completed transaction is too late.</span>`},
+{id:"d1e",dom:"D1",les:"1.5",tags:["core"],
+ q:`General principle for WHERE to place an enforcement hook?`,
+ a:`<span class="lead">Gate the tool at the boundary where the precondition must hold.</span>Hook the tool that performs the action you're protecting (the deployment/merge/refund tool), not an earlier creation step.<span class="why">A Dockerfile check on <code>create_service</code> fails when a later subagent adds the file — gate the <b>deploy</b> tool, where the precondition actually has to be true.</span>`},
+{id:"d1f",dom:"D1",les:"1.3",tags:["core"],
+ q:`A downstream subagent keeps acting on stale output from an upstream subagent. Fix?`,
+ a:`<span class="lead">The coordinator injects the upstream results into the downstream subagent's context.</span>Hub-and-spoke: information flows through the coordinator.<span class="why">Trap: not a message bus, not direct subagent-to-subagent messaging, and not just re-sequencing the steps. The coordinator owns context passing.</span>`},
+{id:"d1g",dom:"D1",les:"1.3",tags:["core"],
+ q:`Why keep hub-and-spoke instead of letting subagents share findings directly? (name the design properties)`,
+ a:`<span class="lead">Context isolation · centralised/deterministic control · no N² communication (scalability).</span><ul><li><b>Isolation</b> — each subagent has a clean, focused context</li><li><b>Central control</b> — coordinator owns sequencing, aggregation, conflict resolution; auditable</li><li><b>No N²</b> — adding a spoke is O(1) to the hub, not new channels to every peer</li></ul><span class="why">Fault isolation is the common fourth: one subagent failing doesn't cascade.</span>`},
+{id:"d1h",dom:"D1",les:"1.1",tags:["core"],
+ q:`Given one large/specialist task and one simple, well-scoped task — delegate both, neither, or split?`,
+ a:`<span class="lead">Split: delegate the large/specialist work, the coordinator handles the simple task directly.</span>Delegation costs context injection + result collection.<span class="why">Delegate when the work is big or needs a specialist; don't pay delegation overhead for something small and self-contained.</span>`},
+{id:"d1i",dom:"D1",les:"1.6",tags:["core"],
+ q:`Four subagents explore a codebase overnight; the machine restarts 3h in and the coordinator starts every task from zero. What design change fixes this?`,
+ a:`<span class="lead">Persist progress to durable state (a manifest / checkpoint) so a restart resumes from where it stopped.</span>Each subagent writes completed work + status; on rerun the coordinator reads the manifest and only redoes what's unfinished.<span class="why">The fix is checkpointed state, not a bigger machine or more retries.</span>`},
+
+/* ───────── D2 — TOOL DESIGN & MCP ───────── */
+{id:"d2a",dom:"D2",les:"2.1",tags:["miss"],
+ q:`After adding "review all customer records…" to the system prompt, the agent starts calling <code>get_customer</code> for order lookups that don't need it. Descriptions are unchanged. Cause + fix?`,
+ a:`<span class="lead">The phrase "customer records" keyword-matches the <code>get_customer</code> tool name — rephrase the system prompt.</span>Two eliminating facts: descriptions unchanged AND it started after the prompt edit ⇒ the edit is the cause.<span class="why">"After X, Y started happening" means X is the cause. Rewriting the description / adding few-shot / merging tools are all ruled out by "descriptions unchanged."</span>`},
+{id:"d2b",dom:"D2",les:"2.2",tags:["core"],
+ q:`A tool returns <code>{success:true, refunds:[], status:"Authentication failed"}</code>; the agent says "no refunds found" and closes the case. Root cause?`,
+ a:`<span class="lead">The tool can't distinguish an access failure from a valid empty result — it should return <code>isError:true, errorCategory:"permission"</code>.</span>"Found nothing" ≠ "couldn't look." Fix is at the tool layer; the agent behaved correctly on what it received.<span class="why">A prompt rule can't structurally tell the two apart; prose-parsing in a hook is fragile; you own the tool layer even for a vendor's misleading flag.</span>`},
+{id:"d2c",dom:"D2",les:"2.2",tags:["core"],
+ q:`A tool returns 503 (overload) and 404 (missing order); the agent retries both identically and burns its budget on 404s. Structural fix?`,
+ a:`<span class="lead">Return a structured <code>errorCategory</code> ("transient" vs "business") plus an <code>isRetryable</code> boolean.</span>503 = transient (retry). 404 = permanent business error (never retry). The distinction must be in the response structure.<span class="why">Embedding the HTTP code in the message text still forces fragile string parsing; more retries don't fix misclassification.</span>`},
+{id:"d2d",dom:"D2",les:"2.4",tags:["core"],
+ q:`An agent repeatedly calls <code>list_tables</code> then <code>describe_table</code> to rediscover schema every run. What MCP feature removes this overhead?`,
+ a:`<span class="lead">Expose the schema as an MCP Resource (a Resource catalogue).</span>Resources provide stable, discoverable context the model can read without spending tool calls re-discovering it each time.<span class="why">Resources = context/data the client can load; Tools = actions. Repeated discovery is a Resources problem.</span>`},
+{id:"d2e",dom:"D2",les:"2.3",tags:["core"],
+ q:`Mixed document types arrive; the agent must ALWAYS call an extraction tool but the right schema depends on reading the doc. Which <code>tool_choice</code>?`,
+ a:`<span class="lead"><code>{"type":"any"}</code> — must call a tool, model picks which.</span>Rule: do I already know which tool must be called? <b>Yes → force it by name</b> (<code>{type:"tool",name:...}</code>). <b>No → <code>"any"</code></b>.<span class="why">Never redesign the toolset to dodge the choice. <code>"auto"</code> allows a prose answer (no guarantee of a call); forcing one specific tool welds every doc to the wrong schema.</span>`},
+{id:"d2f",dom:"D2",les:"2.5",tags:["core"],
+ q:`A shared internal MCP server needs a different API token per developer. Where do you configure the server, and how are credentials handled?`,
+ a:`<span class="lead">Configure the server at project scope (shared config, committed); each developer supplies their own token via an environment variable / personal settings.</span>Shared definition, per-user secret.<span class="why">Never commit tokens to the shared config. The server config is shared; the credential is personal and injected at runtime.</span>`},
+
+/* ───────── D3 — CLAUDE CODE CONFIG ───────── */
+{id:"d3a",dom:"D3",les:"3.6",tags:["core"],
+ q:`A senior tells a junior that <code>-p</code> restricts Claude's file access in CI as a security measure. True or false, and what does <code>-p</code> actually do?`,
+ a:`<span class="lead">False. <code>-p</code> / <code>--print</code> runs Claude non-interactively (print the result and exit) for headless/CI use.</span>It has nothing to do with file or tool access.<span class="why">Access is governed by permissions / allowedTools / permission mode / settings — not by <code>-p</code>. <code>-p</code> is about interactivity, not security.</span>`},
+{id:"d3b",dom:"D3",les:"3.6",tags:["core"],
+ q:`A CI pipeline needs machine-parseable findings (file, line, severity, rationale) but Claude returns prose. Minimal change?`,
+ a:`<span class="lead">Add <code>--output-format json</code>.</span><code>claude -p "…" --output-format json</code> wraps the response in structured JSON the pipeline can parse.<span class="why">Pair it with a prompt asking for findings as a JSON array if you need per-finding fields — but the minimal <b>flag</b> change is <code>--output-format json</code>.</span>`},
+{id:"d3c",dom:"D3",les:"3.1",tags:["core"],
+ q:`You must archive the full transcript immediately before every <code>/compact</code>. Which hook?`,
+ a:`<span class="lead">The <code>PreCompact</code> hook.</span>It's a first-class lifecycle event that fires right before <code>/compact</code> and receives the path to the full pre-compaction transcript.<span class="why">Trap: there is no "Compact" tool, so <code>PreToolUse</code> can't catch it. Compaction is a lifecycle event, not a tool call.</span>`},
+{id:"d3d",dom:"D3",les:"3.4",tags:["core"],
+ q:`Three jobs: (1) PR style checks that block merging, (2) weekly security audit read Monday, (3) nightly test-gen reviewed next day. Which should use the Message Batches API?`,
+ a:`<span class="lead">Tasks 2 and 3 — not 1.</span>The discriminator is: does anything block on the result in real time? Only (1) does (it gates the merge). (2) and (3) have review windows far longer than the async turnaround.<span class="why">"Nightly, reviewed next day" is well within the ~24h window — not too soon. Batches = async, ~24h, ~50% cheaper, for non-time-sensitive work.</span>`},
+{id:"d3e",dom:"D3",les:"3.4",tags:["core"],
+ q:`A nightly batch of 10,000 docs has 200 failures. Which Batches API field lets you reprocess only those 200?`,
+ a:`<span class="lead">The <code>custom_id</code> — the per-request id YOU assign to each message.</span>Results come back unordered; <code>custom_id</code> maps each result to its input, so you identify the 200 failures and submit a new batch of just those.<span class="why">Trap: <code>batch_id</code> (<code>msgbatch_…</code>) identifies the <b>whole job</b> (status/results), not individual documents.</span>`},
+{id:"d3f",dom:"D3",les:"3.2",tags:["core"],
+ q:`A 12-dev team's conventions are applied inconsistently even after adding detailed prompt instructions. Best fix?`,
+ a:`<span class="lead">Put concrete, checkable criteria in <code>CLAUDE.md</code> (project memory) — and enforce mechanical rules with a linter/hook.</span>Team standards belong in shared project config, not repeated prose.<span class="why">If more detailed instructions didn't work, the problem isn't prompt wording — it's the layer. Deterministic standards need a deterministic home.</span>`},
+
+/* ───────── D4 — PROMPT ENGINEERING ───────── */
+{id:"d4a",dom:"D4",les:"4.2",tags:["miss"],
+ q:`A router handles clear cases well but misroutes ambiguous ones at type boundaries. Most effective few-shot fix?`,
+ a:`<span class="lead">4–6 examples AT the boundary, each with the RATIONALE for why one tool was chosen over plausible alternatives.</span>The reasoning is what generalises to unseen boundary cases.<span class="why">Trap: examples grouped by type teach categories the model already knows; more volume doesn't fix boundary confusion; negative examples alone (without the positive rationale) don't resolve it.</span>`},
+{id:"d4b",dom:"D4",les:"4.4",tags:["core"],
+ q:`A Pydantic model validates every field, but 4% fail downstream because <code>total</code> ≠ sum of <code>line_items</code>. No validation errors reported. Fix?`,
+ a:`<span class="lead">Add a model-level validator: <code>@model_validator(mode="after")</code> (v2) / <code>@root_validator</code> (v1) asserting <code>total == sum(line_items)</code>.</span>Field validators run per-field, in isolation — they can't see other fields, so each passes.<span class="why">Validation path: type coercion → field validators (per field) → model validators (whole object). Cross-field invariants need the model level.</span>`},
+{id:"d4c",dom:"D4",les:"4.4",tags:["core"],
+ q:`Step N misclassifies a document and step N+1 confidently acts on the wrong class. Fix?`,
+ a:`<span class="lead">Add inter-step validation between the steps.</span>Validate the output of N before N+1 consumes it.<span class="why">Trap: not more few-shot in N, and not merging N and N+1 into one step. Catch the error at the seam where it propagates.</span>`},
+{id:"d4d",dom:"D4",les:"4.1",tags:["core"],
+ q:`Decision rule: when does a defect get fixed in CODE vs in the PROMPT?`,
+ a:`<span class="lead">Cost of one failure decides it.</span><ul><li><b>Money / security / compliance</b> → code (hook, validator, tool structure) — must be deterministic</li><li><b>Latency / style / efficiency</b> → prompt / few-shot — probabilistic is acceptable</li></ul><span class="why">An 8% compliance-failure rate can never be fixed by "firmer" prompt language.</span>`},
+{id:"d4e",dom:"D4",les:"4.1",tags:["core"],
+ q:`Your reflex is "put it in the prompt." Before choosing any prompt-layer answer, what do you ask?`,
+ a:`<span class="lead">Which layer is actually broken?</span><ul><li>Tool returns a misleading shape → the tool's response structure</li><li>Tool needs dialect/format → the tool description</li><li>Team standard under-specified → CLAUDE.md as concrete criteria</li><li>Cross-field rule → a validator</li><li>Steps cascade errors → an inter-step check</li></ul><span class="why">"Right idea, wrong layer" is a top miss family. Ask: at which point must this be true, and who owns that point?</span>`},
+
+/* ───────── D5 — CONTEXT MANAGEMENT ───────── */
+{id:"d5a",dom:"D5",les:"5.2",tags:["core"],
+ q:`A customer disputes a legit 45-day-old $4,200 charge; policy is silent on out-of-window accommodation and they haven't asked for a manager. What justifies escalation?`,
+ a:`<span class="lead">The policy gap — the agent has no authority to decide, so a human must.</span>Escalate on AUTHORITY.<span class="why">Valid triggers: explicit human request · policy gap · genuine inability to progress. Never escalate on transaction <b>size</b> ($4,200), emotional discomfort, or speculated legal complexity.</span>`},
+{id:"d5b",dom:"D5",les:"5.2",tags:["core"],
+ q:`An <code>escalate_to_human</code> call passes only <code>{customer_id, issue:"Refund requested"}</code> and the human has to call the customer back. What was missing?`,
+ a:`<span class="lead">The order ID, a summary of actions already taken, the root cause of the denial, and a recommended next action.</span>A handoff must let the human continue without restarting.<span class="why">Not a full verbatim transcript (noise) and not a confidence score — actionable state, not raw logs.</span>`},
+{id:"d5c",dom:"D5",les:"5.3",tags:["core"],
+ q:`Long context: where do you place the constraints/instructions the model must not miss?`,
+ a:`<span class="lead">At the start or the end — never buried in the middle.</span>"Lost in the middle": models attend most strongly to the beginning and end of a long context.<span class="why">Put critical constraints and the actual question up top or at the very end; summarise/trim the middle.</span>`},
+{id:"d5d",dom:"D5",les:"5.1",tags:["core"],
+ q:`<code>/compact</code> vs <code>/clear</code> — what's the difference?`,
+ a:`<span class="lead"><code>/compact</code> summarises and preserves the thread; <code>/clear</code> wipes the context entirely.</span>Use compact to keep going with less; clear to start clean.<span class="why"><code>PreCompact</code> fires before a compact so you can archive the transcript first. Neither refreshes stale external file knowledge — for that, start fresh.</span>`},
+{id:"d5e",dom:"D5",les:"5.4",tags:["core"],
+ q:`Grep vs Glob in Claude Code — when do you reach for each?`,
+ a:`<span class="lead">Glob finds files by name/path pattern; Grep searches file <b>contents</b>.</span>"Find all <code>*.test.ts</code>" → Glob. "Find where <code>processRefund</code> is called" → Grep.<span class="why">Match the tool to whether you're searching names or text inside files.</span>`},
+
+/* ───────── REFERENCE / CHEAT SHEETS ───────── */
+{id:"ref1",dom:"REF",les:"hooks",tags:["ref"],
+ q:`List ALL Claude Code hook types.`,
+ a:`<span class="lead">PreToolUse · PostToolUse · UserPromptSubmit · Notification · Stop · SubagentStop · PreCompact · SessionStart · SessionEnd</span><ul><li><b>PreToolUse</b> — before a tool runs; the <b>only</b> one that can block/deny/modify a call</li><li><b>PostToolUse</b> — after a tool runs; react / normalise the result</li><li><b>UserPromptSubmit</b> — before a submitted prompt is processed</li><li><b>Stop / SubagentStop</b> — when the main agent / a subagent finishes</li><li><b>PreCompact</b> — before <code>/compact</code> (gets the transcript path)</li><li><b>SessionStart / SessionEnd</b> — session lifecycle</li><li><b>Notification</b> — on Claude Code notifications</li></ul><span class="warnote">There is NO "SubagentStart" hook.</span>`},
+{id:"ref2",dom:"REF",les:"hooks",tags:["ref"],
+ q:`Which hooks can BLOCK an action vs only observe it? And how do you gate subagent creation?`,
+ a:`<span class="lead">Only <code>PreToolUse</code> blocks. Everything else observes/reacts.</span><ul><li>Block/deny a tool call → <b>PreToolUse</b></li><li>Log/normalise after → PostToolUse</li><li>Before subagent creation → <b>PreToolUse on the Task tool</b></li><li>After a subagent completes → SubagentStop</li></ul><span class="why">"Before creation" always resolves to PreToolUse on Task, because the Task tool is how subagents get spawned.</span>`},
+{id:"ref3",dom:"REF",les:"tool_choice",tags:["ref"],
+ q:`The three <code>tool_choice</code> modes and when to use each.`,
+ a:`<ul><li><code>{"type":"auto"}</code> — model decides whether to call a tool (may answer in prose)</li><li><code>{"type":"any"}</code> — <b>must</b> call some tool; model picks which</li><li><code>{"type":"tool","name":"…"}</code> — force one specific tool</li></ul><span class="lead">Do I know which tool must be called? Yes → name it. No → <code>"any"</code>.</span><span class="why">Never redesign the toolset to avoid making the choice.</span>`},
+{id:"ref4",dom:"REF",les:"errors",tags:["ref"],
+ q:`How should a tool structure errors so the agent retries correctly?`,
+ a:`<span class="lead">Structured fields, never prose: <code>isError</code>, <code>errorCategory</code>, <code>isRetryable</code>.</span><ul><li><b>transient</b> (503/overload) → retryable</li><li><b>business/permanent</b> (404/missing) → never retry</li><li><b>permission/auth</b> → <code>isError:true</code>, don't mask as an empty result</li></ul><span class="why">"Found nothing" (valid empty) must be distinguishable from "couldn't look" (access failure).</span>`},
+{id:"ref5",dom:"REF",les:"batches",tags:["ref"],
+ q:`Message Batches API — key facts and the two IDs.`,
+ a:`<ul><li>Asynchronous, up to ~24h turnaround, ~50% cheaper</li><li>Use when nothing blocks on the result in real time</li><li><b>batch_id</b> (<code>msgbatch_…</code>) — the whole job (poll status / fetch results)</li><li><b>custom_id</b> — per-request id you assign; matches results→inputs and lets you reprocess a subset</li></ul><span class="why">Blocking/synchronous work (gates a merge, user is waiting) → NOT batch.</span>`},
+{id:"ref6",dom:"REF",les:"layers",tags:["ref"],
+ q:`Where does the fix live? (the layer decision table)`,
+ a:`<ul><li>Misleading tool output shape → tool response structure</li><li>Dialect / date / format guidance → tool description</li><li>Team standard under-specified → CLAUDE.md criteria</li><li>Cross-field rule → a validator (model_validator)</li><li>Steps cascade errors → inter-step validation</li><li>Must-never-happen (money/security) → PreToolUse hook</li><li>Style / latency / efficiency → prompt / few-shot</li></ul><span class="why">Ask which layer is broken before defaulting to "put it in the prompt."</span>`},
+{id:"ref7",dom:"REF",les:"exam-day",tags:["ref"],
+ q:`The exam-day 5-second checklist.`,
+ a:`<ul><li>Underline the constraint clause first: <i>already · unchanged · after X · mandated · rejected · is silent on</i></li><li>Read the question sentence LAST, then re-read after choosing ("first step" ≠ "strongest guarantee" ≠ "root cause")</li><li>Default against building — if two options work, the one adding no component wins</li><li>Read paths/params character by character</li><li>Flag &amp; move; answer everything (no penalty)</li></ul><span class="why">Q3 died purely on a skipped "descriptions unchanged" clause. The clause is the answer.</span>`}
+];
+
+/* ══════════════════════════════════════════════════════════════ */
+const DOMAIN_NAMES = {D1:"Agentic Architecture",D2:"Tool Design & MCP",D3:"Claude Code Config",D4:"Prompt Engineering",D5:"Context Management",REF:"Reference"};
+const FILTERS = [
+  {key:"all",label:"All"},
+  {key:"repeat",label:"★ Repeats",star:true},
+  {key:"D1",label:"D1"},{key:"D2",label:"D2"},{key:"D3",label:"D3"},
+  {key:"D4",label:"D4"},{key:"D5",label:"D5"},{key:"REF",label:"Reference"},
+  {key:"focus",label:"Focus (needs work)"}
+];
+const LS_KEY = "cca-flash-known-v1";
+let known = new Set(JSON.parse(localStorage.getItem(LS_KEY) || "[]"));
+let filter = "all";
+let deck = [];
+let idx = 0;
+
+function matches(card, f){
+  if(f==="all") return true;
+  if(f==="repeat") return card.tags.includes("repeat");
+  if(f==="focus") return !known.has(card.id);
+  return card.dom===f;
+}
+function buildDeck(){
+  deck = CARDS.filter(c=>matches(c,filter));
+  if(idx>=deck.length) idx=0;
+}
+function saveKnown(){ localStorage.setItem(LS_KEY, JSON.stringify([...known])); }
+
+function renderFilters(){
+  const el = document.getElementById("filters");
+  el.innerHTML = "";
+  FILTERS.forEach(f=>{
+    const n = CARDS.filter(c=>matches(c,f.key)).length;
+    const b = document.createElement("button");
+    b.className = "chip"+(f.star?" star":"")+(filter===f.key?" active":"");
+    b.innerHTML = f.label+' <span class="cnt">'+n+'</span>';
+    b.onclick = ()=>{ filter=f.key; idx=0; buildDeck(); render(); };
+    el.appendChild(b);
+  });
+}
+function tagBadges(card){
+  let h = '<span class="tag dom">'+card.dom+(card.dom!=="REF"?" · "+card.les:"")+'</span>';
+  if(card.dom==="REF") h = '<span class="tag dom">Reference</span>';
+  if(card.tags.includes("repeat")) h += '<span class="tag repeat">★ Repeat — highest EV</span>';
+  else if(card.tags.includes("miss")) h += '<span class="tag miss">Missed 08-23</span>';
+  else if(card.tags.includes("ref")) h += '<span class="tag ref">Cheat sheet</span>';
+  return h;
+}
+function render(){
+  renderFilters();
+  buildDeck();
+  const card = document.getElementById("card");
+  const outer = document.getElementById("card-outer");
+  const empty = document.getElementById("empty");
+  const known_n = known.size;
+  const filtKnown = deck.filter(c=>known.has(c.id)).length;
+
+  // progress reflects the whole deck
+  document.getElementById("known-n").textContent = filtKnown;
+  document.getElementById("filt-n").textContent = deck.length;
+  document.getElementById("pfill").style.width = deck.length? (filtKnown/deck.length*100)+"%" : "0%";
+
+  if(deck.length===0){
+    outer.style.display="none";
+    document.querySelector(".controls").style.display="none";
+    document.querySelector(".mark-row").style.display="none";
+    document.getElementById("counter").textContent="";
+    empty.style.display="block";
+    return;
+  }
+  outer.style.display="block";
+  document.querySelector(".controls").style.display="flex";
+  document.querySelector(".mark-row").style.display="flex";
+  empty.style.display="none";
+
+  const c = deck[idx];
+  card.classList.remove("flipped");
+  document.getElementById("meta-front").innerHTML = tagBadges(c) + (known.has(c.id)?'<span class="tag known-mark">✓ known</span>':'');
+  document.getElementById("meta-back").innerHTML = tagBadges(c) + (known.has(c.id)?'<span class="tag known-mark">✓ known</span>':'');
+  document.getElementById("front-q").innerHTML = c.q;
+  document.getElementById("back-a").innerHTML = c.a;
+  document.getElementById("counter").innerHTML = "Card <b>"+(idx+1)+"</b> of <b>"+deck.length+"</b> · "+DOMAIN_NAMES[c.dom];
+}
+function flip(){ document.getElementById("card").classList.toggle("flipped"); }
+function next(){ if(deck.length){ idx=(idx+1)%deck.length; render(); } }
+function prev(){ if(deck.length){ idx=(idx-1+deck.length)%deck.length; render(); } }
+function mark(gotIt){
+  if(!deck.length) return;
+  const c = deck[idx];
+  if(gotIt) known.add(c.id); else known.delete(c.id);
+  saveKnown();
+  if(filter==="focus" && gotIt){ buildDeck(); if(idx>=deck.length) idx=0; render(); }
+  else next();
+}
+function shuffle(){
+  for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  idx=0; render();
+}
+document.getElementById("reset").onclick=()=>{
+  if(confirm("Reset all 'known' progress?")){ known=new Set(); saveKnown(); render(); }
+};
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight") next();
+  else if(e.key==="ArrowLeft") prev();
+  else if(e.key===" "){ e.preventDefault(); flip(); }
+  else if(e.key.toLowerCase()==="g") mark(true);
+  else if(e.key.toLowerCase()==="a") mark(false);
+  else if(e.key.toLowerCase()==="s") shuffle();
+});
+render();
+</script>
+</body>
+</html>
