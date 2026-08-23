@@ -400,6 +400,10 @@ const CARDS = [
  q:`Automated review has a high-false-positive category; devs now dismiss findings "without reading." Restore trust?`,
  a:`<span class="lead">Disable the high-false-positive categories, keep the high-precision ones.</span>Trust doesn't stay in its lane — one bad category erodes trust in accurate ones.<span class="why">(practice Q23.) Trap 3: "show confidence scores" is something devs must READ — but the stem says they've stopped reading. When the stem states the causal chain, the answer breaks it.</span>`},
 
+{id:"d4-jsonschema",dom:"D4",tags:["core"],
+ q:`Two things are both called a "schema": <code>input_schema</code> and <code>--json-schema</code>. What does each constrain?`,
+ a:`<span class="lead"><code>input_schema</code> (one per tool) constrains the ARGUMENTS Claude sends INTO that tool. <code>--json-schema</code> (one per run) constrains the shape of the whole run's FINAL answer — it lands in <code>structured_output</code>.</span><span class="why">Unrelated mechanisms that happen to share the JSON Schema format. D2 tool design uses <code>input_schema</code>; D3/CI uses <code>--json-schema</code> so a pipeline can parse and post findings.</span>`},
+
 /* ═══════════ D5 — CONTEXT MANAGEMENT (15%) ═══════════ */
 {id:"d5-escalate",dom:"D5",tags:["repeat"],
  q:`What are the ONLY valid escalation triggers — and the invalid ones?`,
