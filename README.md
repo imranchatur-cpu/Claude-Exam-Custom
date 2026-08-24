@@ -4,7 +4,7 @@ Practice material built from Imran's vault miss profile and the Claude Architect
 
 **Quick links**
 
-- **[Foundations mock exam (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/)** · **[Flashcards](https://imranchatur-cpu.github.io/Claude-Exam-Custom/flashcards.html)**
+- **[Foundations mock exam — Mock 3 (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/)** · **[Mock 4 — Practical Test (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-4.html)** · **[Flashcards](https://imranchatur-cpu.github.io/Claude-Exam-Custom/flashcards.html)**
 - **[Professional mock exam (CCAR-P)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)**
 
 ---
@@ -44,6 +44,25 @@ Controls: `←`/`→` move · `Space` flip · `G` got it · `A` again · `S` shu
 | Nexus Research — Multi-Agent Research | Q46–60 | D2 + D5 + D1 |
 
 **Gate target:** ≥ 80% (48/60) to proceed with Phase 2.
+
+---
+
+## Mock Exam 4 — Practical Test
+
+**[Open exam — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-4.html)**
+
+60 questions · 120 minutes · Single-answer, four-choice · Same engine and look as Mock 3 — intro screen, 120-minute countdown, scenario-grouped navigator, flagging, score ring with per-domain breakdown, and a full review with the correct answer and explanation on every question.
+
+Built from the four practical-test scenarios, 15 questions each. Questions and explanations are tagged to the five Foundations domains for the results breakdown.
+
+| Scenario | Questions | Theme |
+|---|---|---|
+| Multi-agent Research System | Q1–15 | Coordinator/subagent architecture, decomposition, error propagation |
+| Claude Code for Continuous Integration | Q16–30 | CLI in CI, structured output, Batches API, review calibration |
+| Code Generation with Claude Code | Q31–45 | CLAUDE.md, skills, slash commands, MCP config, scope |
+| Customer Support Agent | Q46–60 | Tool selection, agent loop, escalation, context management |
+
+**Domain distribution:** D1 35% · D2 12% · D3 28% · D4 15% · D5 10% (reflects this set's actual mix, weighted toward agentic architecture and Claude Code config).
 
 ---
 
