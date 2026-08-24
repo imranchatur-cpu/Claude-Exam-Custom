@@ -107,7 +107,10 @@ h1 { font-size: 1.45rem; font-weight: 800; line-height: 1.2; margin-bottom: .35r
 .tag.known-mark { margin-left: auto; color: var(--correct); font-weight: 700; font-size: .72rem; }
 .face-label { font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: .6rem; }
 .q { font-size: 1.1rem; font-weight: 600; line-height: 1.5; color: var(--text); }
-.face.front .q { display: flex; align-items: center; flex: 1; }
+/* front question: normal flowing text, centred vertically via auto margins.
+   (Do NOT use display:flex here — it turns inline <code> chips into flex items
+   and breaks sentence wrapping.) */
+.face.front .q { margin: auto 0; overflow-y: auto; }
 .a { font-size: .96rem; line-height: 1.6; color: var(--text); overflow-y: auto; flex: 1; }
 .a .lead { font-weight: 700; color: var(--correct); display: block; margin-bottom: .5rem; }
 .a .why { color: var(--text2); font-size: .88rem; display: block; margin-top: .65rem; padding-top: .65rem; border-top: 1px solid var(--border); }
@@ -154,7 +157,7 @@ footer a { color: var(--accent); text-decoration: none; }
 <header>
   <span class="badge">CCA-F · Exam Fri 28 Aug 2026</span>
   <h1>Architect Foundations — Retrieval Deck</h1>
-  <p class="sub">Every documented miss and discriminator from all assessments (02–23 Aug), plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> are the concepts that have cost marks 2–4 times: highest EV.</p>
+  <p class="sub">Every documented miss and discriminator from all assessments (02–24 Aug), plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> are the concepts that have cost marks 2–4 times: highest EV. <b>Newest (08-24):</b> D4 collapsed to 67% — drill the four D4 cards, especially <i>d4-whichlever</i>.</p>
 </header>
 
 <div class="filters" id="filters"></div>
@@ -272,6 +275,14 @@ const CARDS = [
  q:`Workflow shape: fixed prompt chain or dynamic decomposition?`,
  a:`<span class="lead">Known, predictable, repeatable steps → a fixed prompt chain. Open-ended, next step depends on findings → dynamic adaptive decomposition.</span><span class="why">Traps: a fixed pipeline for exploration, or dynamic agents for a simple predictable flow. A large review → local passes + one integration pass.</span>`},
 
+/* new misses — custom "Mock 4", 08-24 */
+{id:"d1-lowestlevel",dom:"D1",tags:["miss"],
+ q:`A PDF subagent fails often — corrupt files, password-protected, parser hangs — and EVERY exception is thrown straight to the coordinator to retry/skip/fail. Better design?`,
+ a:`<span class="lead">Handle errors at the LOWEST level that can resolve them: local recovery in the subagent for transient failures; escalate only the truly unrecoverable — with the steps tried + partial results.</span><span class="why">(08-24 Q3.) Trap 3/5: "the coordinator pre-validates every document" pushes routine error-handling up to the hub — the exact overload you're removing. Escalate the exception, not the routine. Pairs with the structured partial report (d1-suberr).</span>`},
+{id:"d1-parallelshared",dom:"D1",tags:["miss"],
+ q:`A complex request ("billed twice, discount didn't apply, want to cancel") averages 12+ tool calls at 54% success — the agent investigates issues SEQUENTIALLY and re-fetches the same customer data for each. Fix?`,
+ a:`<span class="lead">Decompose into separate issues, investigate them IN PARALLEL using one shared customer context, then synthesise a single resolution.</span><span class="why">(08-24 Q48.) Root cause = redundant fetches + sequential loops. Trap 5: "add verification checkpoints between stages" adds overhead and fixes neither. Contrast the SIMPLE-request path (single-issue, 91%) → that one's a few-shot fix (d4-varied); this is an architecture fix.</span>`},
+
 /* ═══════════ D2 — TOOL DESIGN & MCP (18%) ═══════════ */
 {id:"d2-desc",dom:"D2",tags:["repeat"],
  q:`The agent picks the wrong tool. First thing to fix?`,
@@ -344,7 +355,7 @@ const CARDS = [
  a:`<span class="lead"><code>.claude/</code> = in the repo = shared with the team. <code>~/.claude/</code> = home folder = only you.</span><span class="why">Cost marks 2×. The exam never says "project-scoped" — it describes the outcome: "every developer / on clone / the team" → <code>.claude/</code>; "personal / without affecting teammates / my own" → <code>~/.claude/</code>. Find that clause before reading the options. Read the <code>~</code> character by character.</span>`},
 {id:"d3-whichfile",dom:"D3",tags:["miss"],
  q:`Four homes for an instruction: always / one file-type across folders / one folder / a task. Which is which?`,
- a:`<ul><li>Apply always, everywhere → <b>CLAUDE.md</b></li><li>One file-type scattered across many folders → <b><code>.claude/rules/</code> + <code>paths:</code> glob</b></li><li>One specific folder → <b>directory-level CLAUDE.md</b></li><li>When doing a particular task → <b>a Skill</b></li></ul><span class="why">(practice Q40, Q33 — I had rules and Skills inverted.) Rules = which files. Skills = which task. CLAUDE.md = always. <code>paths:</code> takes globs only, no grep/content trigger.</span>`},
+ a:`<ul><li>Apply always, everywhere → <b>CLAUDE.md</b></li><li>One file-type scattered across many folders → <b><code>.claude/rules/</code> + <code>paths:</code> glob</b></li><li>One specific folder → <b>directory-level CLAUDE.md</b></li><li>When doing a particular task → <b>a Skill</b></li></ul><span class="why">(practice Q40, Q33, Q38 — rules and Skills inverted, twice again on 08-24.) Rules = which files. Skills = which task. CLAUDE.md = always. <code>paths:</code> takes globs only, no grep/content trigger. See d3-rulesvsskills.</span>`},
 {id:"d3-skillcmd",dom:"D3",tags:["core"],
  q:`Skill vs command file shape, clash behaviour, and the three frontmatter keys?`,
  a:`<span class="lead">Skill = a FOLDER with <code>SKILL.md</code>. Command = a single flat <code>.md</code>. On a name clash, the skill wins. A loose <code>.md</code> dropped in <code>skills/</code> does nothing.</span>Frontmatter: <code>context: fork</code> (isolate noisy output), <code>allowed-tools</code>, <code>argument-hint</code>.<span class="why">Drift: exam says <code>allowed-tools</code> RESTRICTS; current product pre-approves and <code>disallowed-tools</code> is the boundary. Answer the exam.</span>`},
@@ -367,6 +378,14 @@ const CARDS = [
 {id:"d3-refine",dom:"D3",tags:["core"],
  q:`Which refinement technique for: inconsistent format · broken implementation · unfamiliar domain?`,
  a:`<ul><li>Inconsistent transformation/format → 2–3 concrete input/output examples</li><li>Broken implementation → share the specific failing tests (input, expected, actual)</li><li>Unfamiliar domain / hidden tradeoffs → the interview pattern before implementing</li></ul><span class="why">"Be more careful", raising temperature, or implementing before clarifying are the traps.</span>`},
+
+/* new misses — custom "Mock 4", 08-24 */
+{id:"d3-rulesvsskills",dom:"D3",tags:["miss","repeat"],
+ q:`Guidance for a TASK — PR review, deploy, migration, "creating a new endpoint" — belongs in <code>.claude/rules/</code> or a Skill?`,
+ a:`<span class="lead">A Skill — invoked on demand by keyword, loaded ONLY for that task. A <code>paths:</code> rule triggers on a FILE TYPE and over-fires: it loads for every touch of that path, including debugging and review.</span><span class="why">Missed twice on 08-24: Q33 (restructuring a 400-line CLAUDE.md → universal stays in CLAUDE.md, workflow guidance → Skills) and Q38 (endpoint examples only when CREATING endpoints — a rule on <code>.claude/rules/api/</code> also fires during debug/review). <b>Rules = which files. Skills = which task. CLAUDE.md = always.</b></span>`},
+{id:"d3-personalskill",dom:"D3",tags:["miss"],
+ q:`A dev wants to customise the team's <code>/commit</code> skill (own message format, extra checks) without affecting teammates. Where, and what name?`,
+ a:`<span class="lead">A personal copy at <code>~/.claude/skills/commit/SKILL.md</code> with the SAME name — a personal skill shadows the project skill of the same name, keeping the familiar <code>/commit</code> command.</span><span class="why">(08-24 Q36.) Traps: a DIFFERENT name (<code>/my-commit</code>) works but loses the command name; <code>override:true</code> and username conditionals aren't real features. NB the Drift deck: the study site says use a different name — go with the practice-test key (same name) unless told otherwise.</span>`},
 
 /* ═══════════ D4 — PROMPT ENGINEERING (20%) ═══════════ */
 {id:"d4-enforce",dom:"D4",tags:["repeat"],
@@ -403,6 +422,20 @@ const CARDS = [
 {id:"d4-jsonschema",dom:"D4",tags:["core"],
  q:`Two things are both called a "schema": <code>input_schema</code> and <code>--json-schema</code>. What does each constrain?`,
  a:`<span class="lead"><code>input_schema</code> (one per tool) constrains the ARGUMENTS Claude sends INTO that tool. <code>--json-schema</code> (one per run) constrains the shape of the whole run's FINAL answer — it lands in <code>structured_output</code>.</span><span class="why">Unrelated mechanisms that happen to share the JSON Schema format. D2 tool design uses <code>input_schema</code>; D3/CI uses <code>--json-schema</code> so a pipeline can parse and post findings.</span>`},
+
+/* new misses — custom "Mock 4", 08-24. D4 collapsed to 67% — these three are the taper priority. */
+{id:"d4-whichlever",dom:"D4",tags:["miss","repeat"],
+ q:`THE D4 decision: few-shot examples, a self-critique stage, or re-read the constraint — which prompt lever?`,
+ a:`<ul><li><b>Fixed target pattern</b> the model keeps misreading → <b>few-shot examples</b></li><li><b>Gap VARIES case-by-case</b>, or the model must verify its own work → <b>self-critique / evaluator-optimizer</b></li><li>The ask is really about <b>surfacing existing info under a stated constraint</b> → <b>re-read the constraint first</b></li></ul><span class="why">The three 08-24 D4 misses, one card. Few-shot and self-critique pull OPPOSITE ways (Q31 vs Q52) — the variance of the gap decides which.</span>`},
+{id:"d4-examplesvsschema",dom:"D4",tags:["miss"],
+ q:`Claude keeps MISINTERPRETING a prose transform spec — wrong nesting, wrong timestamp format, a different reading each iteration. Best next step?`,
+ a:`<span class="lead">Give 2–3 concrete input→output examples — they remove the prose ambiguity that is the actual root cause.</span><span class="why">(08-24 Q31 — I picked "write a JSON schema + validate.") A schema validates the SHAPE and rejects a wrong result after the fact; it never teaches the MAPPING the prose failed to convey. Rewriting the spec "more precisely" is more of what's already failing. Same family: d3-refine (inconsistent transformation → examples).</span>`},
+{id:"d4-selfcritique",dom:"D4",tags:["miss"],
+ q:`Complex cases score lower on satisfaction — answers are correct but explanations are inconsistently complete, and the missing context VARIES case by case. Improve quality with NO human oversight. Approach?`,
+ a:`<span class="lead">Add a self-critique / evaluator-optimizer stage: the agent drafts, then checks its own draft against explicit criteria (policy context, timeline, next steps) before sending.</span><span class="why">(08-24 Q52 — I picked few-shot for 5 case types.) Because the gaps DIFFER every case, no fixed example set can enumerate them — a self-check catches case-specific gaps. Few-shot = FIXED target; self-critique = VARYING requirement or self-verification.</span>`},
+{id:"d4-nofilter",dom:"D4",tags:["miss"],
+ q:`15 findings/PR, 40% false positives; the bottleneck is investigation time (devs open each to read the rationale). Stakeholders FORBID filtering findings before devs see them. Fix?`,
+ a:`<span class="lead">Put the rationale + a confidence estimate INSIDE each finding, so devs triage at a glance — same information, faster, nothing filtered.</span><span class="why">(08-24 Q28 — I picked "categorise blocking vs suggestions.") Read the constraint: "no filtering before devs see them" kills categorise-and-hide and confidence-thresholding (both remove findings). The bottleneck is triage SPEED, not volume — surface, don't filter. Contrast d4-trust, where filtering IS allowed.</span>`},
 
 /* ═══════════ D5 — CONTEXT MANAGEMENT (15%) ═══════════ */
 {id:"d5-escalate",dom:"D5",tags:["repeat"],
