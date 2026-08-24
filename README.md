@@ -58,9 +58,9 @@ Controls: `←`/`→` move · `Space` flip · `G` got it · `A` again · `S` shu
 
 ## Professional Exam (CCAR-P) — Bespoke Mock #1
 
-**[Open exam — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)** · [Claude artifact (backup)](https://claude.ai/code/artifact/db561b96-5385-48ba-b60c-2eb2c6823c64)
+**[Open exam — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)** · [earlier single-page version (Claude artifact)](https://claude.ai/code/artifact/db561b96-5385-48ba-b60c-2eb2c6823c64)
 
-63 questions · 120 minutes · Multiple-choice, multiple-response, and scenario-matching · Per-domain scoring against the 720 pass line, with a rationale revealed on every question. Written against Exam Guide v1.0 and weighted to the official blueprint — pitched harder than the standard sets, with two-good-answer traps and added technical depth.
+Full timed exam simulator in the **same engine and look as the Foundations mock** — intro screen, 120-minute countdown, domain-grouped question navigator, flagging, a score ring with per-domain breakdown, and a full review with the correct answer, explanation, and named trap on every question. 63 questions across the 7 official domains, weighted to the blueprint. Item formats match the real CCAR-P: **multiple-choice, multiple-response (select TWO), and scenario-matching.** Pitched harder than the standard sets — two-good-answer traps resolved by a binding constraint, plus added technical depth (embedding-space consistency, cache-prefix mechanics, hybrid retrieval, A/B significance, GDPR/HIPAA/FedRAMP).
 
 | # | Domain | Weight | Items |
 |---|---|---|---|
