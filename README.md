@@ -1,6 +1,11 @@
-# Claude Certified Architect Foundations — Custom Practice Exams
+# Claude Certified Architect — Custom Practice Exams
 
-Practice material built from Imran's vault miss profile and the CCAR-F exam guide (v1.0, July 2026).
+Practice material built from Imran's vault miss profile and the Claude Architect exam guides (v1.0, July 2026). Covers both the **Foundations (CCAR-F)** and **Professional (CCAR-P)** exams.
+
+**Quick links**
+
+- **[Foundations mock exam (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/)** · **[Flashcards](https://imranchatur-cpu.github.io/Claude-Exam-Custom/flashcards.html)**
+- **[Professional mock exam (CCAR-P)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)**
 
 ---
 
@@ -48,3 +53,31 @@ Controls: `←`/`→` move · `Space` flip · `G` got it · `A` again · `S` shu
 - Single-answer, four-choice — no multi-select on the live exam
 - 4 of 8 scenarios drawn per sitting
 - Exam booked: **Friday 28 August 2026**
+
+---
+
+## Professional Exam (CCAR-P) — Bespoke Mock #1
+
+**[Open exam — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)** · [Claude artifact (backup)](https://claude.ai/code/artifact/db561b96-5385-48ba-b60c-2eb2c6823c64)
+
+63 questions · 120 minutes · Multiple-choice, multiple-response, and scenario-matching · Per-domain scoring against the 720 pass line, with a rationale revealed on every question. Written against Exam Guide v1.0 and weighted to the official blueprint — pitched harder than the standard sets, with two-good-answer traps and added technical depth.
+
+| # | Domain | Weight | Items |
+|---|---|---|---|
+| 1 | Solution Design & Architecture | 17% | 11 |
+| 2 | Claude Models, Prompting & Context Engineering | 13% | 8 |
+| 3 | Integration | 19% | 12 |
+| 4 | Evaluation, Testing & Optimization | 16% | 10 |
+| 5 | Governance, Safety & Risk Management | 14% | 9 |
+| 6 | Stakeholder Communication & Lifecycle Management | 14% | 9 |
+| 7 | Developer Productivity & Operational Enablement | 7% | 4 |
+
+**Readiness target:** ≥ 85% every domain = clear book-it signal; ≥ 75% with none under 70% = ready with light review.
+
+### CCAR-P exam facts
+
+- 63 questions · 120 minutes · Pass: 720/1000
+- Multiple-choice **and** multiple-response (each item states how many to select)
+- 7 weighted domains — no scenario bank; Professional tier ($175)
+
+> Original practice questions written against the public exam guide. Not affiliated with or endorsed by Anthropic, and not drawn from the live item bank. No practice set guarantees a pass.
