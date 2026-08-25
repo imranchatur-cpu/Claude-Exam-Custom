@@ -5,7 +5,7 @@ Practice material built from Imran's vault miss profile and the Claude Architect
 **Quick links**
 
 - **[Foundations mock exam — Mock 3 (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/)** · **[Mock 4 — Practical Test (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-4.html)** · **[Flashcards](https://imranchatur-cpu.github.io/Claude-Exam-Custom/flashcards.html)**
-- **[Professional mock exam (CCAR-P)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)**
+- **Professional (CCAR-P):** **[Mock #1](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)** · **[Mock #2 — harder set](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-p2.html)**
 
 ---
 
@@ -98,5 +98,27 @@ Full timed exam simulator in the **same engine and look as the Foundations mock*
 - 63 questions · 120 minutes · Pass: 720/1000
 - Multiple-choice **and** multiple-response (each item states how many to select)
 - 7 weighted domains — no scenario bank; Professional tier ($175)
+
+---
+
+## Professional Exam (CCAR-P) — Bespoke Mock #2 (harder set)
+
+**[Open exam — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-p2.html)**
+
+Same engine and look as Mock #1 — intro screen, 120-minute countdown, domain-grouped navigator, flagging, score ring with per-domain breakdown, and a full review with the correct answer, explanation, and named trap on every question. **63 all-new questions** (zero stem overlap with Mock #1), weighted to the blueprint, same item-format mix (45 single · 13 multiple-response · 5 scenario-matching).
+
+Pitched harder and calibrated to how the real exam actually discriminates, drawn from the official Exam Guide v1.0, the tutorialsdojo topic map, and a verified 996/1000 first-hand account of the sitting. Every item is built so **all four options sound responsible and exactly one fixes the root cause.** The set drills the exam's recurring seams:
+
+- **Root cause over symptom** — the answer that adds a log, a confirmation, or "a stronger prompt" is the distractor.
+- **Least privilege at the source** — remove the capability, don't compensate for it downstream.
+- **Humans on the irreversible** — no answer that strips oversight for speed is ever correct; rubber-stamp "human-in-the-loop" is not oversight.
+- **Treat retrieved/external content as untrusted** — the exfiltration path (untrusted input + private data + an outbound tool), enforcing access control at retrieval, tenant/user scoping.
+- **When *not* to use an LLM** — sub-50 ms real-time scoring, deterministic arithmetic, and "the model is not a vector index."
+- **Silent quality drift** on a model upgrade → a version-attributed eval set that gates promotion; **accepted ≠ correct**; stratify before you trust an aggregate.
+- **Measure before you assert** — bias evaluation is required even without fine-tuning; an anecdote is not a distribution.
+- **Define targets before you build**; name the trade-off and hand stakeholders real options (defer / descope / extend).
+- **Config scope** — managed settings individuals can't override, project scope under version control, personal preferences in user scope, **credentials never in a committed file**.
+
+Anchored to **Exam Guide v1.0 (July 2026)**; deliberately excludes product features that post-date the exam window, and keeps all model references generic (smallest / mid-tier / frontier).
 
 > Original practice questions written against the public exam guide. Not affiliated with or endorsed by Anthropic, and not drawn from the live item bank. No practice set guarantees a pass.
