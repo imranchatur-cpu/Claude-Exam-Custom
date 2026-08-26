@@ -9,11 +9,13 @@ Practice material built from Imran's vault miss profile and the Claude Architect
 
 ---
 
-## Retrieval Flashcards — comprehensive taper deck (built 23 Aug 2026)
+## Retrieval Flashcards — comprehensive taper deck (built 23 Aug 2026, updated 26 Aug)
 
 **[Open flashcards — GitHub Pages](https://imranchatur-cpu.github.io/Claude-Exam-Custom/flashcards.html)**
 
-**96 active-recall cards** covering every documented miss and discriminator from all six assessments (02–23 Aug), plus reference cheat-sheets and the current-state drift list. Filter by domain, by **★ Repeats** (17 concepts that have cost marks 2–4×), **Misses**, or **Focus (needs work)**; progress saved in-browser. Answer the **Exam Guide v1.0** version where it drifts from the current product.
+**109 active-recall cards** covering every documented miss and discriminator from all assessments (02–25 Aug), plus reference cheat-sheets and the current-state drift list. Filter by domain, by **★ Repeats** (19 concepts that have cost marks 2–4×), **Misses**, or **Focus (needs work)**; progress saved in-browser. Answer the **Exam Guide v1.0** version where it drifts from the current product.
+
+Latest additions: the three misses from the 08-25 practice exam (897/1000, 25/28) — `d2-mcpvsbash`, `d3-citestcriteria`, `d3-worktree` — plus a linting scope card (`d3-lint`).
 
 | Deck | Cards | Covers |
 |---|---|---|

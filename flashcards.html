@@ -157,7 +157,7 @@ footer a { color: var(--accent); text-decoration: none; }
 <header>
   <span class="badge">CCA-F · Exam Fri 28 Aug 2026</span>
   <h1>Architect Foundations — Retrieval Deck</h1>
-  <p class="sub">Every documented miss and discriminator from all assessments (02–24 Aug), plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> are the concepts that have cost marks 2–4 times: highest EV. <b>Newest (08-24):</b> D4 collapsed to 67% — drill the four D4 cards, especially <i>d4-whichlever</i>.</p>
+  <p class="sub">Every documented miss and discriminator from all assessments (02–25 Aug), plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> are the concepts that have cost marks 2–4 times: highest EV. <b>Newest (08-25, 897/1000):</b> D3 is now the weakest at 67% — both misses are Lesson 3.6 CI/CD (<i>d3-citestcriteria</i>, <i>d3-worktree</i>); D2 slipped to 80% (<i>d2-mcpvsbash</i> — enhance the description, don't reach for the system prompt).</p>
 </header>
 
 <div class="filters" id="filters"></div>
@@ -209,7 +209,7 @@ footer a { color: var(--accent); text-decoration: none; }
 
 <script>
 /* ════════════════════════════════════════════════════════════════
-   CARDS — comprehensive across all assessments (02–23 Aug 2026)
+   CARDS — comprehensive across all assessments (02–25 Aug 2026)
    tag: repeat = cost marks 2-4x (highest EV) · miss = documented miss
    · ref = cheat-sheet · drift = exam-vs-current-product · core = foundational
 ════════════════════════════════════════════════════════════════ */
@@ -328,6 +328,11 @@ const CARDS = [
  q:`A tool isn't being called. How do you decide whether to fix config or the description?`,
  a:`<span class="lead">Not discovered at all → config/discovery issue (scope, MCP registration). Discovered but ignored → description/selection issue (fix the description).</span><span class="why">(practice area 16.) Fixing the description when the tool was never discovered — or the reverse — is the trap.</span>`},
 
+/* new miss — practice exam, 08-25 */
+{id:"d2-mcpvsbash",dom:"D2",tags:["miss"],
+ q:`An MCP <code>query_database</code> tool returns structured results with column types + pagination, but agents ignore it and run SQL via the built-in Bash tool instead. Most likely cause + fix?`,
+ a:`<span class="lead">The MCP tool's description is too sparse, so agents fall back to the familiar Bash tool — enhance the description to spell out its structured output, column types, and pagination advantages over Bash.</span><span class="why">(08-25 Q02, D2 2.4.) Trap: "add a system-prompt instruction to always use query_database" (my pick) — brittle, and doesn't scale across agents/contexts; the root cause is the description. This is the MIRROR of d2-spkeyword: there the SP changed while descriptions stayed correct → fix the SP; here nothing touched the SP and the description is sparse → fix the description. Also not a connectivity issue — a disconnected server wouldn't list the tool at all.</span>`},
+
 /* ═══════════ D3 — CLAUDE CODE CONFIG (20%) ═══════════ */
 {id:"d3-p",dom:"D3",tags:["repeat"],
  q:`A senior says <code>-p</code> restricts Claude's file access in CI as a security measure. True? What does <code>-p</code> do?`,
@@ -353,6 +358,9 @@ const CARDS = [
 {id:"d3-scope",dom:"D3",tags:["repeat"],
  q:`Config scope: which prefix is team-shared vs personal, and how does the exam signal it?`,
  a:`<span class="lead"><code>.claude/</code> = in the repo = shared with the team. <code>~/.claude/</code> = home folder = only you.</span><span class="why">Cost marks 2×. The exam never says "project-scoped" — it describes the outcome: "every developer / on clone / the team" → <code>.claude/</code>; "personal / without affecting teammates / my own" → <code>~/.claude/</code>. Find that clause before reading the options. Read the <code>~</code> character by character.</span>`},
+{id:"d3-lint",dom:"D3",tags:["core"],
+ q:`What is <b>linting</b>, and where does a team rule like "everyone runs lint before commit" live?`,
+ a:`<span class="lead">A <b>linter</b> scans source code for stylistic errors, bugs, and security issues WITHOUT executing it ("lint" = poor/redundant code; "linting" = the automated scan). "Lint before commit" is a team standard → put it in the project-root <code>CLAUDE.md</code> (or <code>.claude/CLAUDE.md</code>), committed to git so it ships with every clone.</span><span class="why">Scope discriminator (d3-scope): "everyone / the team / on clone" → <code>.claude/</code> project scope — NOT <code>~/.claude/CLAUDE.md</code>, which is user-only and never reaches teammates. If the rule must hold EVERY time rather than just be suggested, CLAUDE.md only asks — a hook / <code>settings.json</code> enforces (d3-claudemd). And linting itself gates output but never teaches the model to generalise (d4-varied).</span>`},
 {id:"d3-whichfile",dom:"D3",tags:["miss"],
  q:`Four homes for an instruction: always / one file-type across folders / one folder / a task. Which is which?`,
  a:`<ul><li>Apply always, everywhere → <b>CLAUDE.md</b></li><li>One file-type scattered across many folders → <b><code>.claude/rules/</code> + <code>paths:</code> glob</b></li><li>One specific folder → <b>directory-level CLAUDE.md</b></li><li>When doing a particular task → <b>a Skill</b></li></ul><span class="why">(practice Q40, Q33, Q38 — rules and Skills inverted, twice again on 08-24.) Rules = which files. Skills = which task. CLAUDE.md = always. <code>paths:</code> takes globs only, no grep/content trigger. See d3-rulesvsskills.</span>`},
@@ -386,6 +394,14 @@ const CARDS = [
 {id:"d3-personalskill",dom:"D3",tags:["miss"],
  q:`A dev wants to customise the team's <code>/commit</code> skill (own message format, extra checks) without affecting teammates. Where, and what name?`,
  a:`<span class="lead">A personal copy at <code>~/.claude/skills/commit/SKILL.md</code> with the SAME name — a personal skill shadows the project skill of the same name, keeping the familiar <code>/commit</code> command.</span><span class="why">(08-24 Q36.) Traps: a DIFFERENT name (<code>/my-commit</code>) works but loses the command name; <code>override:true</code> and username conditionals aren't real features. NB the Drift deck: the study site says use a different name — go with the practice-test key (same name) unless told otherwise.</span>`},
+
+/* new misses — practice exam, 08-25 (both D3 3.6 CI/CD) */
+{id:"d3-citestcriteria",dom:"D3",tags:["miss"],
+ q:`CLAUDE.md says new microservices must include integration tests (API contract compliance, DB migration rollback), but Claude Code sometimes writes unit tests that MOCK the database instead. What to add?`,
+ a:`<span class="lead">Tighten the CLAUDE.md test rule with concrete criteria — real DB connections, contract assertions — plus examples of the expected structure/fixtures. The root cause is an under-specified instruction: "integration tests" was never defined for this codebase.</span><span class="why">(08-25 Q01, D3 3.6.) Traps: a PostToolUse hook that REJECTS any test file containing mocks (my pick) — too aggressive; mocks are valid in unit tests, and the problem is integration tests MISSING, not unit tests existing. A <code>.claude/rules/</code> "never use mocks" path rule bans them everywhere — same over-broad error. Specify what's REQUIRED; don't ban a useful pattern. Pairs with d3-cicrit: vague criteria → the model does the easy thing and still looks compliant.</span>`},
+{id:"d3-worktree",dom:"D3",tags:["miss"],
+ q:`Two Claude Code instances run in separate git worktrees (branches <code>extract/payment</code> and <code>extract/inventory</code>); both must modify the shared <code>OrderService.java</code>. How to coordinate?`,
+ a:`<span class="lead">Sequence it: Instance A completes and merges first, then Instance B rebases onto the updated main and makes its change with full awareness of A's edits. Sequential merge-and-rebase is the standard pattern for parallel Claude Code instances touching a shared file.</span><span class="why">(08-25 Q24, D3 3.6.) Trap: "let both edit independently on their branches and resolve the merge conflict at the end" (my pick) — risks complex, contradictory conflicts; coordinate shared-file changes UP FRONT. Git has no built-in file locking for standard workflows (Git LFS locking is for binaries). A dedicated third "shared-file" instance just adds coordination overhead.</span>`},
 
 /* ═══════════ D4 — PROMPT ENGINEERING (20%) ═══════════ */
 {id:"d4-enforce",dom:"D4",tags:["repeat"],
