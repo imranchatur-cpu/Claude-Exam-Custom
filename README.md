@@ -6,6 +6,7 @@ Practice material built from Imran's vault miss profile and the Claude Architect
 
 - **[Foundations mock exam — Mock 3 (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/)** · **[Mock 4 — Practical Test (CCAR-F)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-4.html)** · **[Flashcards](https://imranchatur-cpu.github.io/Claude-Exam-Custom/flashcards.html)**
 - **Professional (CCAR-P):** **[Mock #1](https://imranchatur-cpu.github.io/Claude-Exam-Custom/ccar-p-mock-exam.html)** · **[Mock #2 — harder set](https://imranchatur-cpu.github.io/Claude-Exam-Custom/mock-exam-p2.html)**
+- **Reference:** **[Recall Sheet — Q→A crib (API + Claude Code + Agent SDK)](https://imranchatur-cpu.github.io/Claude-Exam-Custom/recall-sheet.html)** · one-page, exam-style Q→A with a Quiz mode and the turn-lifecycle flow
 
 ---
 

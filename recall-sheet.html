@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Claude Exam Recall Sheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+  :root{
+    --paper:#EAEEEF; --surface:#FFFFFF; --ink:#14181B; --muted:#586066; --faint:#8A9198;
+    --line:#D6DBDD; --line2:#E6EAEB;
+    --accent:#0F6B74; --accent-2:#0B4d54; --accent-soft:rgba(15,107,116,.09);
+    --trap:#BB1E2C; --trap-soft:rgba(187,30,44,.07); --trap-line:rgba(187,30,44,.28);
+    --good:#1F7A42;
+    --code-bg:#EEF1F2; --code-ink:#1C2226; --code-line:#DBE0E2;
+    --c-key:#0B6b73; --c-str:#9A5A1C; --c-com:#7B838A; --c-num:#8A4FB0;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --paper:#0F1215; --surface:#161A1E; --ink:#E6EAEC; --muted:#9AA2A8; --faint:#727A80;
+      --line:#272D33; --line2:#1F252A;
+      --accent:#4EBAC5; --accent-2:#78d0d9; --accent-soft:rgba(78,186,197,.10);
+      --trap:#F0727A; --trap-soft:rgba(240,114,122,.10); --trap-line:rgba(240,114,122,.30);
+      --good:#5FCB86;
+      --code-bg:#0C1013; --code-ink:#D7DBDE; --code-line:#222A30;
+      --c-key:#4EBAC5; --c-str:#D3A868; --c-com:#5F686F; --c-num:#B48BD8;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1215; --surface:#161A1E; --ink:#E6EAEC; --muted:#9AA2A8; --faint:#727A80;
+    --line:#272D33; --line2:#1F252A;
+    --accent:#4EBAC5; --accent-2:#78d0d9; --accent-soft:rgba(78,186,197,.10);
+    --trap:#F0727A; --trap-soft:rgba(240,114,122,.10); --trap-line:rgba(240,114,122,.30);
+    --good:#5FCB86;
+    --code-bg:#0C1013; --code-ink:#D7DBDE; --code-line:#222A30;
+    --c-key:#4EBAC5; --c-str:#D3A868; --c-com:#5F686F; --c-num:#B48BD8;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    font-size:14px; line-height:1.4; letter-spacing:.005em; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1240px; margin:0 auto; padding:26px 22px 60px}
+
+  header.mast{
+    display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+    gap:14px 24px; padding-bottom:14px; margin-bottom:20px; border-bottom:2.5px solid var(--ink);
+  }
+  .mast h1{
+    font-family:"Archivo",sans-serif; font-weight:800; letter-spacing:-.02em;
+    font-size:clamp(25px,4.2vw,38px); line-height:.98; margin:0; text-wrap:balance;
+  }
+  .mast h1 .tick{color:var(--accent)}
+  .mast .sub{color:var(--muted); font-size:12.5px; margin-top:7px; max-width:56ch}
+  .mast .sub b{color:var(--ink); font-weight:600}
+  .howto{font-size:11px; color:var(--muted); margin-top:6px}
+  .howto b{color:var(--accent-2)}
+
+  .legend{display:flex; flex-direction:column; gap:7px; font-size:11px; color:var(--muted); align-items:flex-end}
+  .quizbtn{
+    font-family:"JetBrains Mono",monospace; font-size:11.5px; cursor:pointer; font-weight:500;
+    background:var(--accent); color:#fff; border:1px solid var(--accent); border-radius:20px; padding:6px 14px;
+  }
+  .quizbtn:hover{background:var(--accent-2)}
+  body.quiz .quizbtn{background:var(--surface); color:var(--accent); }
+  .legend .hint{max-width:24ch; text-align:right; line-height:1.35}
+
+  .cols{ columns:3 320px; column-gap:18px; }
+  .card{
+    break-inside:avoid; -webkit-column-break-inside:avoid; page-break-inside:avoid;
+    background:var(--surface); border:1px solid var(--line); border-radius:9px;
+    padding:11px 13px 12px; margin:0 0 18px;
+  }
+  .card > h2{
+    font-family:"Archivo",sans-serif; font-weight:700; font-size:13.5px; letter-spacing:-.01em;
+    margin:0 0 8px; padding-bottom:6px; border-bottom:1px solid var(--line2);
+    display:flex; align-items:baseline; gap:8px;
+  }
+  .card > h2 .n{
+    font-family:"JetBrains Mono",monospace; font-weight:700; font-size:10.5px; color:var(--surface);
+    background:var(--accent); border-radius:4px; padding:2px 6px; flex:none; transform:translateY(-1px);
+  }
+  .card.pin{ border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  .card.danger{ border-color:var(--trap-line); background:var(--trap-soft); }
+  .card.danger > h2{ color:var(--trap); border-bottom-color:var(--trap-line); }
+  .card.danger > h2 .n{ background:var(--trap); }
+
+  /* ---- Q&A ---- */
+  .qa{ margin:0; padding:6px 0; border-bottom:1px dotted var(--line2); }
+  .qa:last-child{border-bottom:none}
+  .q{ font-size:12px; font-weight:600; color:var(--ink); display:flex; gap:6px; }
+  .q::before{ content:"Q"; font-family:"JetBrains Mono",monospace; font-size:9.5px; font-weight:700;
+    color:var(--muted); border:1px solid var(--line); border-radius:3px; padding:0 3px; height:14px;
+    display:inline-flex; align-items:center; flex:none; transform:translateY(1px); }
+  .a{ font-size:12px; color:var(--accent-2); margin-top:3px; padding-left:20px; position:relative; }
+  .a::before{ content:"→"; position:absolute; left:6px; color:var(--accent); font-weight:700; }
+  .a b{ color:var(--ink); font-weight:600; }
+  .a .pick{ color:var(--good); font-weight:700; }
+  .a .nope{ color:var(--trap); font-weight:600; }
+  .a code{ color:var(--accent-2); }
+
+  /* Quiz mode: hide answers until revealed */
+  body.quiz .qa .a{ filter:blur(5px); opacity:.55; user-select:none; transition:filter .12s, opacity .12s; }
+  body.quiz .qa{ cursor:pointer; }
+  body.quiz .qa.show .a{ filter:none; opacity:1; }
+  body.quiz .qa:not(.show):hover .a{ opacity:.75; }
+
+  h3.sub{ font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.07em;
+    color:var(--accent); margin:9px 0 3px; }
+  b,strong{font-weight:600}
+  .mut{color:var(--muted)}
+
+  code{ font-family:"JetBrains Mono",monospace; font-size:.85em; background:var(--code-bg); color:var(--code-ink);
+    padding:1px 4px; border-radius:4px; border:1px solid var(--code-line); word-break:break-word; }
+  pre{ font-family:"JetBrains Mono",monospace; font-size:11px; line-height:1.5; background:var(--code-bg);
+    color:var(--code-ink); border:1px solid var(--code-line); border-radius:7px; padding:8px 10px; margin:5px 0;
+    overflow-x:auto; white-space:pre; }
+  pre code{background:none; border:none; padding:0; font-size:inherit; color:inherit}
+  .k{color:var(--c-key); font-weight:500} .s{color:var(--c-str)} .c{color:var(--c-com); font-style:italic}
+  .num{color:var(--c-num)}
+  kbd{font-family:"JetBrains Mono",monospace; font-size:10px; background:var(--code-bg);
+    border:1px solid var(--code-line); border-bottom-width:2px; border-radius:4px; padding:0 5px}
+
+  table{width:100%; border-collapse:collapse; margin:5px 0; font-size:11.5px; font-variant-numeric:tabular-nums}
+  th,td{text-align:left; padding:3px 7px; border-bottom:1px solid var(--line2); vertical-align:top}
+  thead th{font-size:9.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); border-bottom:1.5px solid var(--line)}
+  td code{font-size:11px; padding:0 3px}
+  .mono-cell{font-family:"JetBrains Mono",monospace}
+  .yes{color:var(--good); font-weight:700} .no{color:var(--trap); font-weight:700}
+
+  .trapgrid{columns:2 260px; column-gap:18px}
+  .trap-item{break-inside:avoid; margin:0 0 8px; padding-left:15px; position:relative; font-size:11.5px}
+  .trap-item::before{content:"▶"; position:absolute; left:0; top:1px; color:var(--trap); font-size:8px}
+  .trap-item .fix{color:var(--good); font-weight:600}
+  .trap-item b{color:var(--ink)}
+
+  /* ---- Lifecycle flow ---- */
+  .lifecycle{border-color:var(--accent)}
+  .flow{display:flex; flex-wrap:wrap; align-items:stretch; gap:6px; margin:9px 0 4px}
+  .step{background:var(--code-bg); border:1px solid var(--code-line); border-radius:7px; padding:6px 9px;
+    font-size:11.5px; font-weight:600; display:flex; flex-direction:column; gap:1px; min-width:0}
+  .step span{font-weight:400; color:var(--muted); font-size:9.5px; letter-spacing:.01em}
+  .step.start{border-color:var(--accent)}
+  .step.pre{border-left:3px solid var(--trap)}
+  .step.post{border-left:3px solid var(--good)}
+  .step.tool{border-left:3px solid var(--accent)}
+  .step.stop{border-color:var(--ink); border-width:1.5px}
+  .arrow{align-self:center; color:var(--faint); font-weight:700; font-size:13px}
+  .loop{display:flex; flex-direction:column; gap:4px; border:1.5px dashed var(--accent);
+    border-radius:9px; padding:5px 8px 8px; background:var(--accent-soft)}
+  .looplabel{font-size:9.5px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.06em}
+  .loopinner{display:flex; flex-wrap:wrap; align-items:stretch; gap:6px}
+  .flow.secondary{display:block; font-size:11px; color:var(--muted); margin:2px 0 4px}
+  .flow.secondary b{color:var(--ink); font-weight:600}
+  .lifecycle .qacols{columns:2 240px; column-gap:18px; margin-top:6px}
+  .lifecycle .qacols .qa{break-inside:avoid}
+
+  footer{margin-top:24px; padding-top:12px; border-top:1px solid var(--line); color:var(--faint);
+    font-size:11px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+
+  .toggle{position:fixed; top:12px; right:12px; z-index:20; font-family:"JetBrains Mono",monospace;
+    font-size:11px; cursor:pointer; background:var(--surface); color:var(--muted);
+    border:1px solid var(--line); border-radius:20px; padding:5px 11px}
+  .toggle:hover{color:var(--ink); border-color:var(--accent)}
+
+  @media (max-width:520px){ .cols{columns:1} .trapgrid{columns:1} }
+
+  @media print{
+    :root{--paper:#fff; --surface:#fff}
+    body{font-size:9.4px} body.quiz .qa .a{filter:none!important; opacity:1!important}
+    .wrap{max-width:none; padding:0}
+    .toggle,.quizbtn{display:none}
+    .cols{columns:3 190px; column-gap:10px}
+    .card{border-color:#ccc; padding:6px 8px; margin-bottom:8px; border-radius:4px; box-shadow:none!important}
+    pre{font-size:7.8px; padding:4px 6px}
+    table{font-size:8.4px}
+    .mast h1{font-size:21px} header.mast{margin-bottom:9px}
+    footer{display:none}
+    a{color:inherit; text-decoration:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<button class="toggle" id="tg" aria-label="Toggle light/dark">◐ theme</button>
+
+<div class="wrap">
+
+<header class="mast">
+  <div>
+    <h1>Claude Exam <span class="tick">Recall&nbsp;Sheet</span></h1>
+    <div class="sub">Every fact framed as the <b>question the exam asks</b> → the answer. API + Claude Code + Agent SDK. Print landscape for one page.</div>
+    <div class="howto"><b>Watch for the discrimination pattern:</b> "Does X go in CLAUDE.md or settings.json?" · "Which HTTP code…?" · "Which flag / mode / value does Y?"</div>
+  </div>
+  <div class="legend">
+    <button class="quizbtn" id="quiz">🎯 Quiz me — hide answers</button>
+    <div class="hint">In quiz mode, click a <b>Q</b> to reveal its answer. Answers always print.</div>
+  </div>
+</header>
+
+<div class="cols">
+
+  <!-- 1 WHERE DOES IT GO -->
+  <section class="card pin">
+    <h2><span class="n">1</span> "Where does it go?" — config</h2>
+    <div class="qa"><div class="q">Tool permissions / allowed tools — CLAUDE.md or settings.json?</div><div class="a"><span class="pick">settings.json</span> → <code>permissions.allow</code>. <span class="nope">Not</span> CLAUDE.md.</div></div>
+    <div class="qa"><div class="q">Hooks — CLAUDE.md or settings.json?</div><div class="a"><span class="pick">settings.json</span> (<code>hooks</code> key). CLAUDE.md can't run anything.</div></div>
+    <div class="qa"><div class="q">Env vars, MCP servers, model choice?</div><div class="a"><span class="pick">settings.json</span> — it's all <b>configuration</b>.</div></div>
+    <div class="qa"><div class="q">Coding standards, architecture, conventions, build cmds?</div><div class="a"><span class="pick">CLAUDE.md</span> — it's <b>instructions/context</b>.</div></div>
+    <div class="qa"><div class="q">What runs <b>deterministically</b>, regardless of Claude's decision?</div><div class="a"><span class="pick">Hooks</span>. CLAUDE.md is only context — Claude may ignore it.</div></div>
+    <div class="qa"><div class="q">Which config wins: enterprise or user?</div><div class="a"><span class="pick">Enterprise/managed</span> — top of precedence.</div></div>
+    <div class="qa"><div class="q">settings.json precedence, high → low?</div><div class="a">Managed › CLI <code>--settings</code> › <code>settings.local.json</code> › <code>settings.json</code> › <code>~/.claude/</code></div></div>
+  </section>
+
+  <!-- 2 CLAUDE.md vs settings vs hooks -->
+  <section class="card">
+    <h2><span class="n">2</span> CLAUDE.md vs settings vs hooks</h2>
+    <div class="qa"><div class="q">When is CLAUDE.md loaded?</div><div class="a">At <b>session start</b> (project → user → <code>CLAUDE.local.md</code>).</div></div>
+    <div class="qa"><div class="q">Which file is gitignored / personal?</div><div class="a"><code>CLAUDE.local.md</code> and <code>settings.local.json</code>.</div></div>
+    <div class="qa"><div class="q">Command to create a CLAUDE.md?</div><div class="a"><code>/init</code></div></div>
+    <div class="qa"><div class="q">3 hook fields you configure?</div><div class="a"><code>matcher</code> (tool name/regex) → <code>hooks:[{type, command}]</code></div></div>
+    <div class="qa"><div class="q">Hook events to know?</div><div class="a"><code>PreToolUse</code> · <code>PostToolUse</code> · <code>UserPromptSubmit</code> · <code>SessionStart</code>/<code>End</code> · <code>Stop</code> · <code>SubagentStop</code> · <code>PreCompact</code></div></div>
+    <div class="qa"><div class="q">Hook <code>type</code> values?</div><div class="a"><code>command</code> · <code>http</code> · <code>prompt</code> · <code>agent</code></div></div>
+  </section>
+
+  <!-- 3 CONTEXT WINDOW -->
+  <section class="card">
+    <h2><span class="n">3</span> Context window — the 3 levers</h2>
+    <div class="qa"><div class="q">Name the 3 ways to handle long context.</div><div class="a"><b>Caching</b> (reuse) · <b>Context editing</b> (clear) · <b>Compaction</b> (summarize).</div></div>
+    <div class="qa"><div class="q">Which one <b>summarizes</b> old context?</div><div class="a"><span class="pick">Compaction</span> (<code>compact-2026-01-12</code>, ~150K trigger).</div></div>
+    <div class="qa"><div class="q">Which one <b>deletes</b> old tool results / thinking?</div><div class="a"><span class="pick">Context editing</span> → <code>clear_tool_uses_20250919</code>, <code>clear_thinking_20251015</code>.</div></div>
+    <div class="qa"><div class="q">Context window: Opus 5 / Sonnet 5? Haiku 4.5?</div><div class="a"><b>1M</b> tokens · Haiku 4.5 = <b>200K</b>.</div></div>
+    <div class="qa"><div class="q">Compaction gotcha — what must you re-send each turn?</div><div class="a">The full <code>response.content</code> (compaction blocks included) — text-only loses state.</div></div>
+  </section>
+
+  <!-- 4 PROMPT CACHING -->
+  <section class="card">
+    <h2><span class="n">4</span> Prompt caching</h2>
+    <div class="qa"><div class="q">Cache type value?</div><div class="a"><code>"cache_control":{"type":"ephemeral"}</code></div></div>
+    <div class="qa"><div class="q">Default TTL? Extended?</div><div class="a"><b>5 min</b> default · <b>1h</b> via <code>"ttl":"1h"</code>.</div></div>
+    <div class="qa"><div class="q">Max breakpoints per request?</div><div class="a"><b>4</b></div></div>
+    <div class="qa"><div class="q">Prefix / render order?</div><div class="a"><code>tools → system → messages</code>. Stable first, volatile last.</div></div>
+    <div class="qa"><div class="q">How do you confirm a cache hit?</div><div class="a"><code>usage.cache_read_input_tokens</code> &gt; 0 (write = <code>cache_creation_input_tokens</code>).</div></div>
+    <div class="qa"><div class="q">What silently invalidates it?</div><div class="a">Any byte change in the prefix — <code>datetime.now()</code>, unsorted JSON, a changed tool list.</div></div>
+  </section>
+
+  <!-- 5 TOOLS + TOOL_CHOICE -->
+  <section class="card">
+    <h2><span class="n">5</span> Tools &amp; tool_choice</h2>
+    <div class="qa"><div class="q">Default tool_choice?</div><div class="a"><code>{"type":"auto"}</code> — Claude decides.</div></div>
+    <div class="qa"><div class="q">Force <b>at least one</b> tool?</div><div class="a"><code>{"type":"any"}</code></div></div>
+    <div class="qa"><div class="q">Force <b>one specific</b> tool?</div><div class="a"><code>{"type":"tool","name":"…"}</code></div></div>
+    <div class="qa"><div class="q">Forbid tools?</div><div class="a"><code>{"type":"none"}</code></div></div>
+    <div class="qa"><div class="q">Limit to one tool per turn?</div><div class="a"><code>"disable_parallel_tool_use":true</code> (on any tool_choice).</div></div>
+    <div class="qa"><div class="q">Where does <code>strict:true</code> go?</div><div class="a">On the <b>tool definition</b> — <span class="nope">not</span> tool_choice. Needs <code>additionalProperties:false</code>.</div></div>
+    <div class="qa"><div class="q">Returning multiple parallel results?</div><div class="a">All <code>tool_result</code> blocks in <b>one</b> user message.</div></div>
+    <div class="qa"><div class="q">Signal a tool failure?</div><div class="a"><code>tool_result</code> with <code>"is_error":true</code>.</div></div>
+  </section>
+
+  <!-- 6 ERRORS -->
+  <section class="card">
+    <h2><span class="n">6</span> Error codes</h2>
+    <table>
+      <thead><tr><th>#</th><th>Type</th><th>Retry?</th></tr></thead>
+      <tbody>
+        <tr><td class="mono-cell">400</td><td><code>invalid_request_error</code></td><td class="no">No</td></tr>
+        <tr><td class="mono-cell">401</td><td><code>authentication_error</code></td><td class="no">No</td></tr>
+        <tr><td class="mono-cell">403</td><td><code>permission_error</code></td><td class="no">No</td></tr>
+        <tr><td class="mono-cell">404</td><td><code>not_found_error</code></td><td class="no">No</td></tr>
+        <tr><td class="mono-cell">413</td><td><code>request_too_large</code></td><td class="no">No</td></tr>
+        <tr><td class="mono-cell">429</td><td><code>rate_limit_error</code></td><td class="yes">Yes</td></tr>
+        <tr><td class="mono-cell">500</td><td><code>api_error</code></td><td class="yes">Yes</td></tr>
+        <tr><td class="mono-cell">529</td><td><code>overloaded_error</code></td><td class="yes">Yes</td></tr>
+      </tbody>
+    </table>
+    <div class="qa"><div class="q">Which are retryable?</div><div class="a"><b>Only 429, ≥500, network.</b> SDK auto-retries (<code>max_retries=2</code>).</div></div>
+    <div class="qa"><div class="q">Bad / typo'd model ID — which code?</div><div class="a"><b>404</b> not_found — <span class="nope">not</span> 400.</div></div>
+    <div class="qa"><div class="q">Roles don't alternate / first msg is assistant?</div><div class="a"><b>400</b>. First message must be <code>user</code>.</div></div>
+    <div class="qa"><div class="q">Overloaded code?</div><div class="a"><b>529</b> overloaded_error (retry w/ backoff).</div></div>
+  </section>
+
+  <!-- 7 MCP -->
+  <section class="card">
+    <h2><span class="n">7</span> MCP</h2>
+    <div class="qa"><div class="q">Transport types?</div><div class="a"><code>http</code> · <code>sse</code> (deprecated) · <code>stdio</code> · <code>ws</code></div></div>
+    <div class="qa"><div class="q">Add a server from the CLI?</div><div class="a"><code>claude mcp add --transport http name URL</code></div></div>
+    <div class="qa"><div class="q">Project-level MCP config file?</div><div class="a"><code>.mcp.json</code> → <code>{"mcpServers":{…}}</code></div></div>
+    <div class="qa"><div class="q">How are MCP tools named?</div><div class="a"><code>mcp__&lt;server&gt;__&lt;tool&gt;</code></div></div>
+    <div class="qa"><div class="q">Pass MCP config to a headless run?</div><div class="a"><code>--mcp-config file.json</code></div></div>
+    <div class="qa"><div class="q">API MCP connector requires…?</div><div class="a"><code>mcp_servers</code> <b>+</b> a <code>mcp_toolset</code> tool <b>+</b> beta <code>mcp-client-2025-11-20</code>. One alone → error.</div></div>
+  </section>
+
+  <!-- 8 AGENT SDK -->
+  <section class="card">
+    <h2><span class="n">8</span> Agent SDK</h2>
+    <div class="qa"><div class="q">Package names (py / ts)?</div><div class="a"><code>claude-agent-sdk</code> / <code>@anthropic-ai/claude-agent-sdk</code> <span class="mut">(renamed)</span>.</div></div>
+    <div class="qa"><div class="q">What does <code>query()</code> return?</div><div class="a">An <b>async iterator</b> of messages (<code>async for</code> / <code>for await</code>).</div></div>
+    <div class="qa"><div class="q">Options object?</div><div class="a"><code>ClaudeAgentOptions(…)</code> — <code>system_prompt, model, permission_mode, max_turns</code>.</div></div>
+    <div class="qa"><div class="q">Multi-turn / persistent client?</div><div class="a"><code>ClaudeSDKClient</code> — <code>.query()</code> then <code>.receive_response()</code>.</div></div>
+    <div class="qa"><div class="q">Agent SDK vs Tool Runner?</div><div class="a">Different. Tool Runner = <code>client.beta.messages.tool_runner</code> in the <b>API</b> SDK.</div></div>
+<pre><code><span class="k">async for</span> msg <span class="k">in</span> query(prompt=<span class="s">"…"</span>,
+    options=ClaudeAgentOptions(model=<span class="s">"sonnet"</span>,
+        permission_mode=<span class="s">"acceptEdits"</span>)): ...</code></pre>
+  </section>
+
+  <!-- 9 -p / json / pydantic -->
+  <section class="card">
+    <h2><span class="n">9</span> <code>-p</code> · JSON · pydantic</h2>
+    <div class="qa"><div class="q">Run Claude Code headless?</div><div class="a"><code>claude -p "prompt"</code> (<code>--print</code>).</div></div>
+    <div class="qa"><div class="q"><code>--output-format</code> values?</div><div class="a"><code>text</code> · <code>json</code> · <code>stream-json</code></div></div>
+    <div class="qa"><div class="q">In JSON output, where is the answer?</div><div class="a">The <code>"result"</code> field (also <code>session_id</code>, <code>total_cost_usd</code>, <code>usage</code>).</div></div>
+    <div class="qa"><div class="q">Pydantic structured output (API)?</div><div class="a"><code>messages.parse(…, output_format=<b>ModelClass</b>)</code> → <code>r.parsed_output</code>.</div></div>
+    <div class="qa"><div class="q">Raw JSON schema instead of a class?</div><div class="a"><code>output_config={"format":{"type":"json_schema","schema":…}}</code> on <code>.create()</code>.</div></div>
+    <div class="qa"><div class="q">Deprecated way?</div><div class="a">Top-level <code>output_format</code> <b>string</b> param — <span class="nope">don't use</span>.</div></div>
+  </section>
+
+  <!-- 10 CLI FLAGS -->
+  <section class="card">
+    <h2><span class="n">10</span> "Which flag does…?"</h2>
+    <div class="qa"><div class="q">Headless / print &amp; exit?</div><div class="a"><code>-p</code> / <code>--print</code></div></div>
+    <div class="qa"><div class="q">Resume the most recent session?</div><div class="a"><code>-c</code> / <code>--continue</code></div></div>
+    <div class="qa"><div class="q">Resume a specific session?</div><div class="a"><code>-r</code> / <code>--resume &lt;id&gt;</code></div></div>
+    <div class="qa"><div class="q">Cap agentic turns?</div><div class="a"><code>--max-turns N</code></div></div>
+    <div class="qa"><div class="q">Add extra working directories?</div><div class="a"><code>--add-dir</code></div></div>
+    <div class="qa"><div class="q">Restrict / deny tools?</div><div class="a"><code>--allowed-tools</code> / <code>--disallowed-tools</code></div></div>
+    <div class="qa"><div class="q">Add to the system prompt?</div><div class="a"><code>--append-system-prompt</code></div></div>
+    <div class="qa"><div class="q">Skip all permission prompts?</div><div class="a"><code>--dangerously-skip-permissions</code> = <code>--permission-mode bypassPermissions</code>.</div></div>
+  </section>
+
+  <!-- 11 COMMANDS + MODES -->
+  <section class="card">
+    <h2><span class="n">11</span> Commands &amp; permission modes</h2>
+    <div class="qa"><div class="q">4 permission modes?</div><div class="a"><code>default</code> · <code>acceptEdits</code> · <code>plan</code> · <code>bypassPermissions</code>.</div></div>
+    <div class="qa"><div class="q">Which explores <b>without</b> editing source?</div><div class="a"><span class="pick">plan</span></div></div>
+    <div class="qa"><div class="q">Which auto-accepts file edits?</div><div class="a"><span class="pick">acceptEdits</span></div></div>
+    <div class="qa"><div class="q">How to cycle modes?</div><div class="a"><kbd>Shift</kbd>+<kbd>Tab</kbd></div></div>
+    <div class="qa"><div class="q">Free up / summarize context?</div><div class="a"><code>/compact</code> (see usage with <code>/context</code>).</div></div>
+    <div class="qa"><div class="q">Start a fresh conversation?</div><div class="a"><code>/clear</code></div></div>
+    <div class="qa"><div class="q">Manage subagents / MCP / hooks?</div><div class="a"><code>/agents</code> · <code>/mcp</code> · <code>/hooks</code></div></div>
+  </section>
+
+  <!-- 12 MEMORY LAYERS -->
+  <section class="card">
+    <h2><span class="n">12</span> The 4 memory layers</h2>
+    <div class="qa"><div class="q">Name the 4 layers.</div><div class="a">1 CLAUDE.md · 2 Auto memory (MEMORY.md) · 3 Subagent memory · 4 Tool-based (on-demand) memory.</div></div>
+    <div class="qa"><div class="q">Which do <b>you</b> write vs Claude writes?</div><div class="a">You → <b>CLAUDE.md</b>. Claude → <b>MEMORY.md</b> (auto).</div></div>
+    <div class="qa"><div class="q">Subagent memory scope options?</div><div class="a"><code>user</code> · <code>project</code> · <code>local</code>.</div></div>
+    <div class="qa"><div class="q">Memory <b>tool</b> type string (API)?</div><div class="a"><code>memory_20250818</code></div></div>
+    <div class="qa"><div class="q">Trap: 4 memory layers vs…?</div><div class="a">The <b>5-level settings</b> precedence (card 1). Different thing.</div></div>
+  </section>
+
+  <!-- 13 FRONTMATTER -->
+  <section class="card">
+    <h2><span class="n">13</span> Frontmatter</h2>
+    <div class="qa"><div class="q">Custom slash command location?</div><div class="a"><code>.claude/commands/&lt;name&gt;.md</code></div></div>
+    <div class="qa"><div class="q">Subagent location?</div><div class="a"><code>.claude/agents/&lt;name&gt;.md</code></div></div>
+    <div class="qa"><div class="q">Required subagent frontmatter fields?</div><div class="a"><code>name</code> + <code>description</code> (add <code>tools</code>, <code>model</code>).</div></div>
+    <div class="qa"><div class="q">Positional args? All args? Dynamic output?</div><div class="a"><code>$1 $2</code> · <code>$ARGUMENTS</code> · <code>!`cmd`</code></div></div>
+    <div class="qa"><div class="q">Restrict a command's tools?</div><div class="a"><code>allowed-tools:</code> in the frontmatter.</div></div>
+<pre><code><span class="k">---</span>
+<span class="k">name</span>: code-reviewer
+<span class="k">description</span>: Reviews code…
+<span class="k">tools</span>: Read, Grep, Bash
+<span class="k">model</span>: sonnet
+<span class="k">---</span></code></pre>
+  </section>
+
+</div><!-- /cols -->
+
+<!-- LIFECYCLE -->
+<section class="card lifecycle">
+  <h2><span class="n">⏱</span> Turn lifecycle — hook firing order (prompt → PreToolUse → down)</h2>
+  <p class="mut" style="font-size:11.5px; margin:2px 0 0">Top-level events fire top→bottom. The dashed block (PreToolUse → tool → PostToolUse) <b>repeats once per tool call</b>. Colored edge = <span style="color:var(--trap)">can block</span> / <span style="color:var(--good)">runs after</span>.</p>
+  <div class="flow">
+    <div class="step start">SessionStart<span>session opens</span></div>
+    <div class="arrow">→</div>
+    <div class="step">UserPromptSubmit<span>prompt sent · inject context / block</span></div>
+    <div class="arrow">→</div>
+    <div class="loop">
+      <div class="looplabel">↻ per tool call</div>
+      <div class="loopinner">
+        <div class="step pre">PreToolUse<span>before tool · allow / deny / ask</span></div>
+        <div class="arrow">→</div>
+        <div class="step tool">tool runs<span>Bash · Edit · MCP…</span></div>
+        <div class="arrow">→</div>
+        <div class="step post">PostToolUse<span>after result · validate / format</span></div>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step stop">Stop<span>Claude finishes · StopFailure on error</span></div>
+  </div>
+  <div class="flow secondary">Also, off the main line: <b>SubagentStop</b> (a Task subagent finishes) · <b>Notification</b> (permission prompt / idle) · <b>PreCompact</b> → <b>PostCompact</b> (around compaction) · <b>SessionEnd</b> (session closes).</div>
+  <div class="qacols">
+    <div class="qa"><div class="q">What fires first when you submit a message?</div><div class="a"><code>UserPromptSubmit</code> (after <code>SessionStart</code> at session open).</div></div>
+    <div class="qa"><div class="q">Which hook can <b>block a tool before it runs</b>?</div><div class="a"><span class="pick">PreToolUse</span> — deny or ask.</div></div>
+    <div class="qa"><div class="q">Which fires <b>after</b> a tool returns (to format/validate)?</div><div class="a"><span class="pick">PostToolUse</span>.</div></div>
+    <div class="qa"><div class="q">Which fires when Claude finishes the whole answer?</div><div class="a"><code>Stop</code> (<code>StopFailure</code> if it errored).</div></div>
+    <div class="qa"><div class="q">Which fires when a spawned subagent finishes?</div><div class="a"><code>SubagentStop</code>.</div></div>
+    <div class="qa"><div class="q">Which fires just before context is compacted?</div><div class="a"><code>PreCompact</code>.</div></div>
+  </div>
+</section>
+
+<!-- TRAPS -->
+<section class="card danger">
+  <h2><span class="n">!</span> "If you see this on the exam…" — traps</h2>
+  <div class="trapgrid">
+    <div class="trap-item"><b>budget_tokens</b> on Opus 5/4.8/4.7/Sonnet 5/Fable → <code>400</code>. <span class="fix">Answer: <code>thinking:{"type":"adaptive"}</code>.</span></div>
+    <div class="trap-item"><b>temperature / top_p / top_k</b> on those models → <code>400</code>. <span class="fix">Remove them.</span></div>
+    <div class="trap-item"><b>Assistant prefill</b> (4.6+ family) → <code>400</code>. <span class="fix">Use structured output instead.</span></div>
+    <div class="trap-item"><b>effort</b> is inside <code>output_config</code>, not top-level. Values <code>low·medium·high·xhigh·max</code>.</div>
+    <div class="trap-item"><b>Bad model ID → 404</b>, never 400. No date suffix: <code>claude-sonnet-4-6</code>, not <code>…4.6</code>.</div>
+    <div class="trap-item"><b>Retryable = 429 / ≥500 / network only.</b> 4xx (400/401/403/404/413) never retry.</div>
+    <div class="trap-item"><b>strict:true</b> → on the tool def, <span class="fix">not tool_choice.</span></div>
+    <div class="trap-item"><b>Parallel tool_results</b> → all in ONE user message.</div>
+    <div class="trap-item"><b>MCP API connector</b> = two halves + beta header. One alone = validation error.</div>
+    <div class="trap-item"><b>Cache invalidation</b> = one byte in the prefix. Verify via <code>cache_read_input_tokens</code>.</div>
+    <div class="trap-item"><b>Tools/permissions/hooks</b> → settings.json. <span class="fix">CLAUDE.md is context only.</span></div>
+    <div class="trap-item"><b>Agent SDK ≠ Tool Runner.</b> Package renamed to <code>claude-agent-sdk</code>.</div>
+    <div class="trap-item"><b>output_format</b> = pydantic class on <code>.parse()</code>; old top-level string is deprecated.</div>
+    <div class="trap-item"><b>≥128K max_tokens</b> requires streaming or you hit an HTTP timeout.</div>
+    <div class="trap-item"><b>display defaults to "omitted"</b> — thinking is silent unless you set <code>"summarized"</code>.</div>
+  </div>
+</section>
+
+<footer>
+  <span>Claude Exam Recall Sheet · Q→A format · API + Claude Code + Agent SDK</span>
+  <span>Verify volatile items (model IDs, beta-header dates) against current docs before the exam.</span>
+</footer>
+
+</div>
+
+<script>
+  (function(){
+    var tg=document.getElementById('tg');
+    function cur(){ var t=document.documentElement.getAttribute('data-theme');
+      if(t) return t; return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'; }
+    tg.addEventListener('click',function(){
+      var next=cur()==='dark'?'light':'dark';
+      document.documentElement.setAttribute('data-theme',next);
+      try{localStorage.setItem('crib-theme',next);}catch(e){}
+    });
+    try{var s=localStorage.getItem('crib-theme'); if(s)document.documentElement.setAttribute('data-theme',s);}catch(e){}
+
+    var qz=document.getElementById('quiz');
+    qz.addEventListener('click',function(){
+      var on=document.body.classList.toggle('quiz');
+      qz.textContent = on ? '📖 Show all answers' : '🎯 Quiz me — hide answers';
+      if(!on){ document.querySelectorAll('.qa.show').forEach(function(q){q.classList.remove('show');}); }
+    });
+    document.querySelectorAll('.qa').forEach(function(q){
+      q.setAttribute('tabindex','0');
+      function toggle(){ if(document.body.classList.contains('quiz')) q.classList.toggle('show'); }
+      q.addEventListener('click',toggle);
+      q.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+    });
+  })();
+</script>
