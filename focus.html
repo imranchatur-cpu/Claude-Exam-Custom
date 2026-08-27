@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night-Before Focus — Claude Architect</title>
+<style>
+  :root{
+    --bg:#F7F8FA; --surface:#FFFFFF; --surface2:#F0F2F6;
+    --text:#1A1D26; --muted:#5B6472; --line:#E2E6EE;
+    --accent:#3B6BF5; --correct:#1DB87A; --wrong:#D94545; --warn:#E07B00;
+    --radius:8px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0F1117; --surface:#181C28; --surface2:#1F2432;
+      --text:#E7EAF0; --muted:#8B93A3; --line:#2A3040;
+      --accent:#4F7EFF; --correct:#2ECC8A; --wrong:#E05252; --warn:#F5A623;
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{font-size:15px}
+  body{
+    background:var(--bg); color:var(--text); line-height:1.55;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    padding:28px 16px 80px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+  header{margin-bottom:22px}
+  .badge{
+    display:inline-block; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+    border-radius:100px; padding:3px 11px; margin-bottom:12px;
+  }
+  h1{font-size:1.7rem; line-height:1.15; letter-spacing:-.01em; margin-bottom:6px}
+  .lede{color:var(--muted); font-size:.95rem}
+  .pace{
+    margin:18px 0 26px; background:var(--surface); border:1px solid var(--warn);
+    border-left:4px solid var(--warn); border-radius:var(--radius); padding:13px 15px;
+    font-size:.92rem;
+  }
+  .pace b{color:var(--warn)}
+  section{margin-bottom:26px}
+  .tier{
+    display:flex; align-items:baseline; gap:10px; margin:0 0 12px;
+    padding-bottom:7px; border-bottom:1px solid var(--line);
+  }
+  .tier h2{font-size:1.02rem; letter-spacing:-.01em}
+  .tier .note{font-size:.8rem; color:var(--muted)}
+  .t1 h2{color:var(--wrong)}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:12px 14px; margin-bottom:9px; display:flex; gap:12px; align-items:flex-start;
+  }
+  .t1 .card{border-left:3px solid var(--wrong)}
+  .ids{flex:0 0 auto; display:flex; flex-direction:column; gap:4px; min-width:118px}
+  .id{
+    font-family:var(--mono); font-size:.76rem; background:var(--surface2);
+    border:1px solid var(--line); border-radius:5px; padding:2px 7px; color:var(--accent);
+    white-space:nowrap; text-align:center;
+  }
+  .body{flex:1 1 auto; font-size:.92rem}
+  .body .star{color:var(--warn); font-weight:700}
+  .miss{
+    display:inline-block; font-family:var(--mono); font-size:.68rem; color:var(--wrong);
+    border:1px solid var(--wrong); border-radius:4px; padding:0 5px; margin-left:6px;
+    vertical-align:middle;
+  }
+  .gap .card{border-left:3px solid var(--warn); flex-direction:column; gap:6px}
+  .q{font-weight:600}
+  .a{color:var(--muted); font-size:.9rem}
+  .a b{color:var(--text)}
+  .drop{
+    background:var(--surface2); border:1px dashed var(--line); border-radius:var(--radius);
+    padding:12px 14px; font-size:.9rem; color:var(--muted);
+  }
+  .drop b{color:var(--text)}
+  footer{margin-top:34px; padding-top:16px; border-top:1px solid var(--line); font-size:.85rem; color:var(--muted)}
+  footer a{color:var(--accent); text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  @media (max-width:520px){
+    .card{flex-direction:column; gap:8px}
+    .ids{flex-direction:row; flex-wrap:wrap}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="badge">Night-Before Focus · Exam Fri 28 Aug 2026</span>
+  <h1>The whole list. Everything else is filtered out.</h1>
+  <p class="lede">11 card ids + 3 gaps the deck doesn't cover. Built from six sittings (best 897). D3 3.6 CI/CD is closed — dropped. <span style="color:var(--warn)">★</span> = a repeat you've missed 2–4 times. <span style="color:var(--wrong);font-family:var(--mono);font-size:.8rem">08-26</span> = missed in yesterday's two sittings.</p>
+</header>
+
+<div class="pace">
+  <b>The real rule for Friday: pace, don't stack.</b> Yesterday you answered the claim-source question <b>right at 8:04, wrong 16 min later</b> — same question, second back-to-back sitting. Readiness is settled. The only thing left to lose is by arriving flat. Read each stem for <b>"changed / unchanged / already / sparse"</b> before you look at the options.
+</div>
+
+<section class="t1">
+  <div class="tier"><h2>Tier 1 — the mirrors you actually missed</h2><span class="note">drill hardest</span></div>
+
+  <div class="card">
+    <div class="ids"><span class="id">d2-spkeyword</span></div>
+    <div class="body"><span class="star">★★</span> SP changed vs description sparse → <b>which is the fix.</b> Missed in <b>both</b> directions.<span class="miss">08-26 Q14</span> Stem says the system prompt changed while descriptions are unchanged → <b>fix the SP.</b> Read what CHANGED vs what's SPARSE.</div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">d2-mcpvsbash</span></div>
+    <div class="body">The partner card: nothing changed the SP and the <b>description is sparse</b> → <b>fix the description.</b> Drill this with d2-spkeyword as a pair or you'll keep flipping them.</div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">d2-errmap</span><span class="id">ref-errors</span></div>
+    <div class="body">Four error categories. The line that matters: <b>429 / rate limit = transient, retryable.</b><span class="miss">08-26 Q27</span> Business = a rule that never resolves on retry (refund over cap, restricted licence). A wait fixes a 429; a wait never fixes a business error.</div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">d1-fork</span></div>
+    <div class="body"><b>fork_session ≠ parallel spawning.</b><span class="miss">08-26 Q26</span> Independent subagents on different topics → coordinator emits <b>multiple Task calls in one response</b> (latency = the slower one). Fork = the <b>same</b> problem explored two ways from a shared baseline.</div>
+  </div>
+</section>
+
+<section>
+  <div class="tier"><h2>Tier 2 — cost you a mark yesterday</h2></div>
+  <div class="card">
+    <div class="ids"><span class="id">d2-toolchoice</span><span class="id">d2-forcelock</span></div>
+    <div class="body">Force-by-name vs <span style="font-family:var(--mono)">"any"</span>, and <b>forcing one tool locks out all the others.</b><span class="miss">08-26 Q07</span> Route between similar tools with distinct names + environment-in-description + a session rule — not by forcing tool_choice.</div>
+  </div>
+</section>
+
+<section>
+  <div class="tier"><h2>Tier 3 — high-weight perennials</h2><span class="note">one clean pass each</span></div>
+  <div class="card">
+    <div class="ids"><span class="id">d3-scope</span></div>
+    <div class="body"><span class="star">★★</span> <span style="font-family:var(--mono)">.claude/</span> = team / in the repo / on clone. <span style="font-family:var(--mono)">~/.claude/</span> = personal / your machine only.</div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">d3-rulesvsskills</span></div>
+    <div class="body"><span class="star">★★</span> A <b>task</b> (PR review, deploy, migration) → <b>Skill</b> (on-demand keyword). A <b>file type / path</b> → <span style="font-family:var(--mono)">.claude/rules/</span> glob. A path rule over-fires on every touch of that path.</div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">d4-whichlever</span></div>
+    <div class="body"><span class="star">★★</span> Fixed target pattern → <b>few-shot.</b> Model must check its own draft → <b>self-critique.</b> A constraint that just needs surfacing → <b>re-read the constraint.</b></div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">d5-escalate</span><span class="id">d5-explicitreq</span><span class="id">d5-policyambig</span></div>
+    <div class="body">The <b>only</b> valid escalation triggers: explicit request for a human · genuine policy ambiguity · authority/policy gap. <b>Never</b> transaction size, frustration, or sentiment.</div>
+  </div>
+</section>
+
+<section>
+  <div class="tier"><h2>Tier 4 — your strengths</h2><span class="note">one read to keep warm</span></div>
+  <div class="card">
+    <div class="ids"><span class="id">d4-enforce</span></div>
+    <div class="body">One failure costs money / security / compliance → <b>code (programmatic gate).</b> Style / latency / efficiency → <b>prompt.</b> A % failure rate in the stem means a prompt is already losing → go deterministic.</div>
+  </div>
+  <div class="card">
+    <div class="ids"><span class="id">ref-hooks</span><span class="id">d1-preblocks</span></div>
+    <div class="body">Five hooks. The two that block: <b>PreToolUse</b> (before the tool) and <b>SubagentStop</b> (before the coordinator accepts the result). To <b>prevent</b> an action → PreToolUse. PostToolUse can't block — it already happened.</div>
+  </div>
+</section>
+
+<section class="gap">
+  <div class="tier"><h2>3 gaps the deck doesn't cover</h2><span class="note">you missed the concept yesterday — read once</span></div>
+  <div class="card">
+    <div class="q">Confidence-tiered routing <span class="miss">08-26 Q17</span></div>
+    <div class="a">High-confidence violation → <b>auto-action.</b> Uncertain → <b>human review.</b> High-confidence safe → <b>auto-pass.</b> Route intelligently — don't escalate <b>everything</b> to a human.</div>
+  </div>
+  <div class="card">
+    <div class="q">What <span style="font-family:var(--mono)">detected_patterns</span> is for <span class="miss">08-26 Q25</span></div>
+    <div class="a">In a validation/retry loop the benefit is <b>programmatic detection of reasoning-vs-category inconsistency → targeted feedback the model self-corrects on.</b> Not "higher accuracy."</div>
+  </div>
+  <div class="card">
+    <div class="q">Claim-source attribution <span class="miss">08-26 Q06</span></div>
+    <div class="a">Attribution must live in <b>structured data (claim→source mappings) preserved through synthesis</b> — not prose or inline hyperlinks, which get rewritten and stripped when the synthesis agent merges.</div>
+  </div>
+</section>
+
+<div class="drop">
+  <b>Dropped on purpose:</b> <span style="font-family:var(--mono)">d3-worktree</span> and <span style="font-family:var(--mono)">d3-citestcriteria</span>. D3 3.6 CI/CD went 6/6 in both of yesterday's sittings — it's closed. Don't spend a minute there.
+</div>
+
+<footer>
+  Back to the full deck → <a href="flashcards.html">flashcards.html</a> · <a href="index.html">home</a>
+</footer>
+
+</div>
+</body>
+</html>
