@@ -155,9 +155,9 @@ footer a { color: var(--accent); text-decoration: none; }
 <body>
 <div class="wrap">
 <header>
-  <span class="badge">CCA-F · Exam Fri 28 Aug 2026</span>
+  <span class="badge">CCA-F · Foundations Retrieval Deck</span>
   <h1>Architect Foundations — Retrieval Deck</h1>
-  <p class="sub">Every documented miss and discriminator from all assessments (02–25 Aug), plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> are the concepts that have cost marks 2–4 times: highest EV. <b>Newest (08-25, 897/1000):</b> D3 is now the weakest at 67% — both misses are Lesson 3.6 CI/CD (<i>d3-citestcriteria</i>, <i>d3-worktree</i>); D2 slipped to 80% (<i>d2-mcpvsbash</i> — enhance the description, don't reach for the system prompt).</p>
+  <p class="sub">Every key discriminator and common trap across the five Foundations domains, plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> flag the concepts most likely to cost marks: highest EV. Use the domain and <b>Misses</b>/<b>Focus</b> filters to build your own weak-spot deck; progress is saved in your browser.</p>
 </header>
 
 <div class="filters" id="filters"></div>
@@ -202,8 +202,8 @@ footer a { color: var(--accent); text-decoration: none; }
 </div>
 
 <footer>
-  Built from the vault miss-tracker · answer the <b>Exam Guide v1.0</b> version where it drifts from the current product<br>
-  <a href="index.html">← Back to Mock Exam 3</a>
+  Answer the <b>Exam Guide v1.0</b> version where it drifts from the current product<br>
+  <a href="index.html">← Back to home</a>
 </footer>
 </div>
 
@@ -275,13 +275,13 @@ const CARDS = [
  q:`Workflow shape: fixed prompt chain or dynamic decomposition?`,
  a:`<span class="lead">Known, predictable, repeatable steps → a fixed prompt chain. Open-ended, next step depends on findings → dynamic adaptive decomposition.</span><span class="why">Traps: a fixed pipeline for exploration, or dynamic agents for a simple predictable flow. A large review → local passes + one integration pass.</span>`},
 
-/* new misses — custom "Mock 4", 08-24 */
+/* additional scenario cards */
 {id:"d1-lowestlevel",dom:"D1",tags:["miss"],
  q:`A PDF subagent fails often — corrupt files, password-protected, parser hangs — and EVERY exception is thrown straight to the coordinator to retry/skip/fail. Better design?`,
- a:`<span class="lead">Handle errors at the LOWEST level that can resolve them: local recovery in the subagent for transient failures; escalate only the truly unrecoverable — with the steps tried + partial results.</span><span class="why">(08-24 Q3.) Trap 3/5: "the coordinator pre-validates every document" pushes routine error-handling up to the hub — the exact overload you're removing. Escalate the exception, not the routine. Pairs with the structured partial report (d1-suberr).</span>`},
+ a:`<span class="lead">Handle errors at the LOWEST level that can resolve them: local recovery in the subagent for transient failures; escalate only the truly unrecoverable — with the steps tried + partial results.</span><span class="why">Trap 3/5: "the coordinator pre-validates every document" pushes routine error-handling up to the hub — the exact overload you're removing. Escalate the exception, not the routine. Pairs with the structured partial report (d1-suberr).</span>`},
 {id:"d1-parallelshared",dom:"D1",tags:["miss"],
  q:`A complex request ("billed twice, discount didn't apply, want to cancel") averages 12+ tool calls at 54% success — the agent investigates issues SEQUENTIALLY and re-fetches the same customer data for each. Fix?`,
- a:`<span class="lead">Decompose into separate issues, investigate them IN PARALLEL using one shared customer context, then synthesise a single resolution.</span><span class="why">(08-24 Q48.) Root cause = redundant fetches + sequential loops. Trap 5: "add verification checkpoints between stages" adds overhead and fixes neither. Contrast the SIMPLE-request path (single-issue, 91%) → that one's a few-shot fix (d4-varied); this is an architecture fix.</span>`},
+ a:`<span class="lead">Decompose into separate issues, investigate them IN PARALLEL using one shared customer context, then synthesise a single resolution.</span><span class="why">Root cause = redundant fetches + sequential loops. Trap 5: "add verification checkpoints between stages" adds overhead and fixes neither. Contrast the SIMPLE-request path (single-issue, 91%) → that one's a few-shot fix (d4-varied); this is an architecture fix.</span>`},
 
 /* ═══════════ D2 — TOOL DESIGN & MCP (18%) ═══════════ */
 {id:"d2-desc",dom:"D2",tags:["repeat"],
@@ -328,10 +328,10 @@ const CARDS = [
  q:`A tool isn't being called. How do you decide whether to fix config or the description?`,
  a:`<span class="lead">Not discovered at all → config/discovery issue (scope, MCP registration). Discovered but ignored → description/selection issue (fix the description).</span><span class="why">(practice area 16.) Fixing the description when the tool was never discovered — or the reverse — is the trap.</span>`},
 
-/* new miss — practice exam, 08-25 */
+/* additional scenario card */
 {id:"d2-mcpvsbash",dom:"D2",tags:["miss"],
  q:`An MCP <code>query_database</code> tool returns structured results with column types + pagination, but agents ignore it and run SQL via the built-in Bash tool instead. Most likely cause + fix?`,
- a:`<span class="lead">The MCP tool's description is too sparse, so agents fall back to the familiar Bash tool — enhance the description to spell out its structured output, column types, and pagination advantages over Bash.</span><span class="why">(08-25 Q02, D2 2.4.) Trap: "add a system-prompt instruction to always use query_database" (my pick) — brittle, and doesn't scale across agents/contexts; the root cause is the description. This is the MIRROR of d2-spkeyword: there the SP changed while descriptions stayed correct → fix the SP; here nothing touched the SP and the description is sparse → fix the description. Also not a connectivity issue — a disconnected server wouldn't list the tool at all.</span>`},
+ a:`<span class="lead">The MCP tool's description is too sparse, so agents fall back to the familiar Bash tool — enhance the description to spell out its structured output, column types, and pagination advantages over Bash.</span><span class="why">Trap: "add a system-prompt instruction to always use query_database" (a tempting distractor) — brittle, and doesn't scale across agents/contexts; the root cause is the description. This is the MIRROR of d2-spkeyword: there the SP changed while descriptions stayed correct → fix the SP; here nothing touched the SP and the description is sparse → fix the description. Also not a connectivity issue — a disconnected server wouldn't list the tool at all.</span>`},
 
 /* ═══════════ D3 — CLAUDE CODE CONFIG (20%) ═══════════ */
 {id:"d3-p",dom:"D3",tags:["repeat"],
@@ -363,7 +363,7 @@ const CARDS = [
  a:`<span class="lead">A <b>linter</b> scans source code for stylistic errors, bugs, and security issues WITHOUT executing it ("lint" = poor/redundant code; "linting" = the automated scan). "Lint before commit" is a team standard → put it in the project-root <code>CLAUDE.md</code> (or <code>.claude/CLAUDE.md</code>), committed to git so it ships with every clone.</span><span class="why">Scope discriminator (d3-scope): "everyone / the team / on clone" → <code>.claude/</code> project scope — NOT <code>~/.claude/CLAUDE.md</code>, which is user-only and never reaches teammates. If the rule must hold EVERY time rather than just be suggested, CLAUDE.md only asks — a hook / <code>settings.json</code> enforces (d3-claudemd). And linting itself gates output but never teaches the model to generalise (d4-varied).</span>`},
 {id:"d3-whichfile",dom:"D3",tags:["miss"],
  q:`Four homes for an instruction: always / one file-type across folders / one folder / a task. Which is which?`,
- a:`<ul><li>Apply always, everywhere → <b>CLAUDE.md</b></li><li>One file-type scattered across many folders → <b><code>.claude/rules/</code> + <code>paths:</code> glob</b></li><li>One specific folder → <b>directory-level CLAUDE.md</b></li><li>When doing a particular task → <b>a Skill</b></li></ul><span class="why">(practice Q40, Q33, Q38 — rules and Skills inverted, twice again on 08-24.) Rules = which files. Skills = which task. CLAUDE.md = always. <code>paths:</code> takes globs only, no grep/content trigger. See d3-rulesvsskills.</span>`},
+ a:`<ul><li>Apply always, everywhere → <b>CLAUDE.md</b></li><li>One file-type scattered across many folders → <b><code>.claude/rules/</code> + <code>paths:</code> glob</b></li><li>One specific folder → <b>directory-level CLAUDE.md</b></li><li>When doing a particular task → <b>a Skill</b></li></ul><span class="why">(Rules and Skills are a classic inversion trap.) Rules = which files. Skills = which task. CLAUDE.md = always. <code>paths:</code> takes globs only, no grep/content trigger. See d3-rulesvsskills.</span>`},
 {id:"d3-skillcmd",dom:"D3",tags:["core"],
  q:`Skill vs command file shape, clash behaviour, and the three frontmatter keys?`,
  a:`<span class="lead">Skill = a FOLDER with <code>SKILL.md</code>. Command = a single flat <code>.md</code>. On a name clash, the skill wins. A loose <code>.md</code> dropped in <code>skills/</code> does nothing.</span>Frontmatter: <code>context: fork</code> (isolate noisy output), <code>allowed-tools</code>, <code>argument-hint</code>.<span class="why">Drift: exam says <code>allowed-tools</code> RESTRICTS; current product pre-approves and <code>disallowed-tools</code> is the boundary. Answer the exam.</span>`},
@@ -375,7 +375,7 @@ const CARDS = [
  a:`<span class="lead">Plan mode — set a consistent strategy and terminology before executing.</span><span class="why">(mock 3 Q52.) Explore finds files without polluting context; it does NOT create consistency. Discriminator: "I don't know where to look" → Explore. "I'm making inconsistent changes" → plan mode first.</span>`},
 {id:"d3-iterative",dom:"D3",tags:["miss"],
  q:`Three issues to fix, where issue 3 changes the output shape issues 1 and 2 must conform to. Order?`,
- a:`<span class="lead">Resolve dependencies first (issue 3), then batch what interacts, then sequence what's independent.</span><span class="why">(mock 1 Q25.) "All three in one message" ignores the dependency. The full rule has three parts — I had only two.</span>`},
+ a:`<span class="lead">Resolve dependencies first (issue 3), then batch what interacts, then sequence what's independent.</span><span class="why">(mock 1 Q25.) "All three in one message" ignores the dependency. The full rule has three parts, not two.</span>`},
 {id:"d3-batchwhich",dom:"D3",tags:["miss"],
  q:`(1) PR checks that block merge, (2) weekly audit read Monday, (3) nightly test-gen reviewed next day. Which use the Batch API?`,
  a:`<span class="lead">2 and 3. Not 1.</span>The only question is: is anyone waiting? (1) blocks a merge → synchronous. (2) and (3) are read later → batch.<span class="why">(practice Q19.) "Nightly" FEELS urgent but has all night — frequency is irrelevant. Batch = 50% cheaper, up to 24h, no latency SLA, no multi-turn tool calling.</span>`},
@@ -387,21 +387,21 @@ const CARDS = [
  q:`Which refinement technique for: inconsistent format · broken implementation · unfamiliar domain?`,
  a:`<ul><li>Inconsistent transformation/format → 2–3 concrete input/output examples</li><li>Broken implementation → share the specific failing tests (input, expected, actual)</li><li>Unfamiliar domain / hidden tradeoffs → the interview pattern before implementing</li></ul><span class="why">"Be more careful", raising temperature, or implementing before clarifying are the traps.</span>`},
 
-/* new misses — custom "Mock 4", 08-24 */
+/* additional scenario cards */
 {id:"d3-rulesvsskills",dom:"D3",tags:["miss","repeat"],
  q:`Guidance for a TASK — PR review, deploy, migration, "creating a new endpoint" — belongs in <code>.claude/rules/</code> or a Skill?`,
- a:`<span class="lead">A Skill — invoked on demand by keyword, loaded ONLY for that task. A <code>paths:</code> rule triggers on a FILE TYPE and over-fires: it loads for every touch of that path, including debugging and review.</span><span class="why">Missed twice on 08-24: Q33 (restructuring a 400-line CLAUDE.md → universal stays in CLAUDE.md, workflow guidance → Skills) and Q38 (endpoint examples only when CREATING endpoints — a rule on <code>.claude/rules/api/</code> also fires during debug/review). <b>Rules = which files. Skills = which task. CLAUDE.md = always.</b></span>`},
+ a:`<span class="lead">A Skill — invoked on demand by keyword, loaded ONLY for that task. A <code>paths:</code> rule triggers on a FILE TYPE and over-fires: it loads for every touch of that path, including debugging and review.</span><span class="why">Two forms of this trap: restructuring a 400-line CLAUDE.md → universal stays in CLAUDE.md, workflow guidance → Skills; and endpoint examples only when CREATING endpoints — a rule on <code>.claude/rules/api/</code> also fires during debug/review. <b>Rules = which files. Skills = which task. CLAUDE.md = always.</b></span>`},
 {id:"d3-personalskill",dom:"D3",tags:["miss"],
  q:`A dev wants to customise the team's <code>/commit</code> skill (own message format, extra checks) without affecting teammates. Where, and what name?`,
- a:`<span class="lead">A personal copy at <code>~/.claude/skills/commit/SKILL.md</code> with the SAME name — a personal skill shadows the project skill of the same name, keeping the familiar <code>/commit</code> command.</span><span class="why">(08-24 Q36.) Traps: a DIFFERENT name (<code>/my-commit</code>) works but loses the command name; <code>override:true</code> and username conditionals aren't real features. NB the Drift deck: the study site says use a different name — go with the practice-test key (same name) unless told otherwise.</span>`},
+ a:`<span class="lead">A personal copy at <code>~/.claude/skills/commit/SKILL.md</code> with the SAME name — a personal skill shadows the project skill of the same name, keeping the familiar <code>/commit</code> command.</span><span class="why">Traps: a DIFFERENT name (<code>/my-commit</code>) works but loses the command name; <code>override:true</code> and username conditionals aren't real features. NB the Drift deck: the study site says use a different name — go with the practice-test key (same name) unless told otherwise.</span>`},
 
-/* new misses — practice exam, 08-25 (both D3 3.6 CI/CD) */
+/* CI/CD scenario cards (Lesson 3.6) */
 {id:"d3-citestcriteria",dom:"D3",tags:["miss"],
  q:`CLAUDE.md says new microservices must include integration tests (API contract compliance, DB migration rollback), but Claude Code sometimes writes unit tests that MOCK the database instead. What to add?`,
- a:`<span class="lead">Tighten the CLAUDE.md test rule with concrete criteria — real DB connections, contract assertions — plus examples of the expected structure/fixtures. The root cause is an under-specified instruction: "integration tests" was never defined for this codebase.</span><span class="why">(08-25 Q01, D3 3.6.) Traps: a PostToolUse hook that REJECTS any test file containing mocks (my pick) — too aggressive; mocks are valid in unit tests, and the problem is integration tests MISSING, not unit tests existing. A <code>.claude/rules/</code> "never use mocks" path rule bans them everywhere — same over-broad error. Specify what's REQUIRED; don't ban a useful pattern. Pairs with d3-cicrit: vague criteria → the model does the easy thing and still looks compliant.</span>`},
+ a:`<span class="lead">Tighten the CLAUDE.md test rule with concrete criteria — real DB connections, contract assertions — plus examples of the expected structure/fixtures. The root cause is an under-specified instruction: "integration tests" was never defined for this codebase.</span><span class="why">Traps: a PostToolUse hook that REJECTS any test file containing mocks (a tempting distractor) — too aggressive; mocks are valid in unit tests, and the problem is integration tests MISSING, not unit tests existing. A <code>.claude/rules/</code> "never use mocks" path rule bans them everywhere — same over-broad error. Specify what's REQUIRED; don't ban a useful pattern. Pairs with d3-cicrit: vague criteria → the model does the easy thing and still looks compliant.</span>`},
 {id:"d3-worktree",dom:"D3",tags:["miss"],
  q:`Two Claude Code instances run in separate git worktrees (branches <code>extract/payment</code> and <code>extract/inventory</code>); both must modify the shared <code>OrderService.java</code>. How to coordinate?`,
- a:`<span class="lead">Sequence it: Instance A completes and merges first, then Instance B rebases onto the updated main and makes its change with full awareness of A's edits. Sequential merge-and-rebase is the standard pattern for parallel Claude Code instances touching a shared file.</span><span class="why">(08-25 Q24, D3 3.6.) Trap: "let both edit independently on their branches and resolve the merge conflict at the end" (my pick) — risks complex, contradictory conflicts; coordinate shared-file changes UP FRONT. Git has no built-in file locking for standard workflows (Git LFS locking is for binaries). A dedicated third "shared-file" instance just adds coordination overhead.</span>`},
+ a:`<span class="lead">Sequence it: Instance A completes and merges first, then Instance B rebases onto the updated main and makes its change with full awareness of A's edits. Sequential merge-and-rebase is the standard pattern for parallel Claude Code instances touching a shared file.</span><span class="why">Trap: "let both edit independently on their branches and resolve the merge conflict at the end" (a tempting distractor) — risks complex, contradictory conflicts; coordinate shared-file changes UP FRONT. Git has no built-in file locking for standard workflows (Git LFS locking is for binaries). A dedicated third "shared-file" instance just adds coordination overhead.</span>`},
 
 /* ═══════════ D4 — PROMPT ENGINEERING (20%) ═══════════ */
 {id:"d4-enforce",dom:"D4",tags:["repeat"],
@@ -415,7 +415,7 @@ const CARDS = [
  a:`<span class="lead">Few-shot examples across VARIED scenarios (async, edge cases, error handling) with reasoning — not one case type.</span><span class="why">(mock 3 Q07/Q54.) Varied examples teach generalisation; uniform ones teach replication. Linting gates output but never teaches the model to generalise — novel cases keep failing.</span>`},
 {id:"d4-interstep",dom:"D4",tags:["repeat"],
  q:`Step 2 misclassifies a doc → step 3 extracts the wrong fields. The team proposes merging steps 2 and 3. Better approach?`,
- a:`<span class="lead">Keep the steps separate and validate the classification BETWEEN them (inter-step validation).</span><span class="why">Missed twice (mock 1 Q02 = mock 2 Q49, identical). "More examples in step 2" only lowers the rate; whatever slips through still cascades. Damage happens at the boundary — fix the boundary. Beware "the team proposes X" planting the wrong idea.</span>`},
+ a:`<span class="lead">Keep the steps separate and validate the classification BETWEEN them (inter-step validation).</span><span class="why">A repeated concept (mock 1 Q02 = mock 2 Q49, identical). "More examples in step 2" only lowers the rate; whatever slips through still cascades. Damage happens at the boundary — fix the boundary. Beware "the team proposes X" planting the wrong idea.</span>`},
 {id:"d4-pydantic",dom:"D4",tags:["miss"],
  q:`A Pydantic model validates every field, yet <code>total</code> ≠ sum of <code>line_items</code> and no errors are raised. Fix?`,
  a:`<span class="lead">Add a cross-field validator: <code>@model_validator(mode="after")</code> comparing the fields.</span>Field validators check each field in isolation — they can't see a relationship between two fields, so each passes.<span class="why">(mock 2 Q28 — I tightened per-field constraints, which can never express a cross-field rule.) The specific error message it produces is the third ingredient of a good retry.</span>`},
@@ -439,19 +439,19 @@ const CARDS = [
  q:`Two things are both called a "schema": <code>input_schema</code> and <code>--json-schema</code>. What does each constrain?`,
  a:`<span class="lead"><code>input_schema</code> (one per tool) constrains the ARGUMENTS Claude sends INTO that tool. <code>--json-schema</code> (one per run) constrains the shape of the whole run's FINAL answer — it lands in <code>structured_output</code>.</span><span class="why">Unrelated mechanisms that happen to share the JSON Schema format. D2 tool design uses <code>input_schema</code>; D3/CI uses <code>--json-schema</code> so a pipeline can parse and post findings.</span>`},
 
-/* new misses — custom "Mock 4", 08-24. D4 collapsed to 67% — these three are the taper priority. */
+/* D4 — lever-selection cards */
 {id:"d4-whichlever",dom:"D4",tags:["miss","repeat"],
  q:`THE D4 decision: few-shot examples, a self-critique stage, or re-read the constraint — which prompt lever?`,
- a:`<ul><li><b>Fixed target pattern</b> the model keeps misreading → <b>few-shot examples</b></li><li><b>Gap VARIES case-by-case</b>, or the model must verify its own work → <b>self-critique / evaluator-optimizer</b></li><li>The ask is really about <b>surfacing existing info under a stated constraint</b> → <b>re-read the constraint first</b></li></ul><span class="why">The three 08-24 D4 misses, one card. Few-shot and self-critique pull OPPOSITE ways (Q31 vs Q52) — the variance of the gap decides which.</span>`},
+ a:`<ul><li><b>Fixed target pattern</b> the model keeps misreading → <b>few-shot examples</b></li><li><b>Gap VARIES case-by-case</b>, or the model must verify its own work → <b>self-critique / evaluator-optimizer</b></li><li>The ask is really about <b>surfacing existing info under a stated constraint</b> → <b>re-read the constraint first</b></li></ul><span class="why">One card for the whole decision. Few-shot and self-critique pull OPPOSITE ways — the variance of the gap decides which.</span>`},
 {id:"d4-examplesvsschema",dom:"D4",tags:["miss"],
  q:`Claude keeps MISINTERPRETING a prose transform spec — wrong nesting, wrong timestamp format, a different reading each iteration. Best next step?`,
- a:`<span class="lead">Give 2–3 concrete input→output examples — they remove the prose ambiguity that is the actual root cause.</span><span class="why">(08-24 Q31 — I picked "write a JSON schema + validate.") A schema validates the SHAPE and rejects a wrong result after the fact; it never teaches the MAPPING the prose failed to convey. Rewriting the spec "more precisely" is more of what's already failing. Same family: d3-refine (inconsistent transformation → examples).</span>`},
+ a:`<span class="lead">Give 2–3 concrete input→output examples — they remove the prose ambiguity that is the actual root cause.</span><span class="why">A tempting wrong answer is "write a JSON schema + validate." A schema validates the SHAPE and rejects a wrong result after the fact; it never teaches the MAPPING the prose failed to convey. Rewriting the spec "more precisely" is more of what's already failing. Same family: d3-refine (inconsistent transformation → examples).</span>`},
 {id:"d4-selfcritique",dom:"D4",tags:["miss"],
  q:`Complex cases score lower on satisfaction — answers are correct but explanations are inconsistently complete, and the missing context VARIES case by case. Improve quality with NO human oversight. Approach?`,
- a:`<span class="lead">Add a self-critique / evaluator-optimizer stage: the agent drafts, then checks its own draft against explicit criteria (policy context, timeline, next steps) before sending.</span><span class="why">(08-24 Q52 — I picked few-shot for 5 case types.) Because the gaps DIFFER every case, no fixed example set can enumerate them — a self-check catches case-specific gaps. Few-shot = FIXED target; self-critique = VARYING requirement or self-verification.</span>`},
+ a:`<span class="lead">Add a self-critique / evaluator-optimizer stage: the agent drafts, then checks its own draft against explicit criteria (policy context, timeline, next steps) before sending.</span><span class="why">A tempting wrong answer is few-shot for the 5 case types. Because the gaps DIFFER every case, no fixed example set can enumerate them — a self-check catches case-specific gaps. Few-shot = FIXED target; self-critique = VARYING requirement or self-verification.</span>`},
 {id:"d4-nofilter",dom:"D4",tags:["miss"],
  q:`15 findings/PR, 40% false positives; the bottleneck is investigation time (devs open each to read the rationale). Stakeholders FORBID filtering findings before devs see them. Fix?`,
- a:`<span class="lead">Put the rationale + a confidence estimate INSIDE each finding, so devs triage at a glance — same information, faster, nothing filtered.</span><span class="why">(08-24 Q28 — I picked "categorise blocking vs suggestions.") Read the constraint: "no filtering before devs see them" kills categorise-and-hide and confidence-thresholding (both remove findings). The bottleneck is triage SPEED, not volume — surface, don't filter. Contrast d4-trust, where filtering IS allowed.</span>`},
+ a:`<span class="lead">Put the rationale + a confidence estimate INSIDE each finding, so devs triage at a glance — same information, faster, nothing filtered.</span><span class="why">A tempting wrong answer is "categorise blocking vs suggestions." Read the constraint: "no filtering before devs see them" kills categorise-and-hide and confidence-thresholding (both remove findings). The bottleneck is triage SPEED, not volume — surface, don't filter. Contrast d4-trust, where filtering IS allowed.</span>`},
 
 /* ═══════════ D5 — CONTEXT MANAGEMENT (15%) ═══════════ */
 {id:"d5-escalate",dom:"D5",tags:["repeat"],
