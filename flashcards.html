@@ -155,9 +155,9 @@ footer a { color: var(--accent); text-decoration: none; }
 <body>
 <div class="wrap">
 <header>
-  <span class="badge">CCA-F · Foundations Retrieval Deck</span>
+  <span class="badge">CCAF · Foundations Retrieval Deck</span>
   <h1>Architect Foundations — Retrieval Deck</h1>
-  <p class="sub">Every key discriminator and common trap across the five Foundations domains, plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> flag the concepts most likely to cost marks: highest EV. Use the domain and <b>Misses</b>/<b>Focus</b> filters to build your own weak-spot deck; progress is saved in your browser.</p>
+  <p class="sub">Every key discriminator and common trap across the five Foundations domains, plus reference cheat-sheets and the current-state drift list. <b>Active recall only</b> — read the trigger, say the answer out loud, then flip. <b>★ Repeats</b> flag the concepts most likely to cost marks: highest EV. Use the domain and <b>Traps</b>/<b>Focus</b> filters to build your own weak-spot deck; progress is saved in your browser. <b>Note:</b> the live CCAF exam is harder than any practice set — dense, scenario-based questions — so master the <i>reasoning</i> on each card, not just the answer.</p>
 </header>
 
 <div class="filters" id="filters"></div>
@@ -209,8 +209,8 @@ footer a { color: var(--accent); text-decoration: none; }
 
 <script>
 /* ════════════════════════════════════════════════════════════════
-   CARDS — comprehensive across all assessments (02–25 Aug 2026)
-   tag: repeat = cost marks 2-4x (highest EV) · miss = documented miss
+   CARDS — comprehensive across all five Foundations domains
+   tag: repeat = high-frequency, high-EV concept · miss = common trap
    · ref = cheat-sheet · drift = exam-vs-current-product · core = foundational
 ════════════════════════════════════════════════════════════════ */
 const CARDS = [
@@ -245,7 +245,7 @@ const CARDS = [
  a:`<span class="lead"><code>PreToolUse</code> on the Task tool.</span>Subagents spawn via the Task tool, so PreToolUse on Task is the earliest deterministic, blocking point.<span class="why">SubagentStart CAN log/inject context but fires at/after creation and CANNOT block — so it's wrong for a "before, deterministic" requirement. (custom exam Q11)</span>`},
 {id:"d1-preblocks",dom:"D1",tags:["repeat"],
  q:`You need to PREVENT an action (a $650 refund, a merge). Which hook — and why not the other?`,
- a:`<span class="lead">PreToolUse blocks (fires before the tool runs). PostToolUse only tidies — it fires after execution, the money's already gone.</span>Say it cold: <b>Pre blocks, Post tidies.</b><span class="why">(mock 2 Q10; Purcell Q1.3 — got the mark with the wrong model in my head.) PostToolUse's real job: normalising results on the way back to Claude.</span>`},
+ a:`<span class="lead">PreToolUse blocks (fires before the tool runs). PostToolUse only tidies — it fires after execution, the money's already gone.</span>Say it cold: <b>Pre blocks, Post tidies.</b><span class="why">(mock 2 Q10.) PostToolUse's real job: normalising results on the way back to Claude.</span>`},
 {id:"d1-hookboundary",dom:"D1",tags:["miss"],
  q:`A PreToolUse Dockerfile check on <code>create_service</code> fails, because some services get their Dockerfile in a later commit by another subagent. Fix?`,
  a:`<span class="lead">Gate the deployment/merge tool instead — the boundary where the precondition must actually hold.</span><span class="why">(mock 2 Q10.) Trap 9: switching Pre→Post still checks at one wrong moment. Picking the event is only half the decision — you must also pick the right tool to attach it to.</span>`},
@@ -289,13 +289,13 @@ const CARDS = [
  a:`<span class="lead">The tool description — it's the primary mechanism for tool selection.</span>Not a routing classifier, not few-shot, not merging tools.<span class="why">A good description states: what it does, inputs, example queries, AND when NOT to use it (the bit people omit and the exam rewards).</span>`},
 {id:"d2-spkeyword",dom:"D2",tags:["repeat","miss"],
  q:`Routing changed AFTER a system-prompt update, DESPITE unchanged tool descriptions. Cause + fix?`,
- a:`<span class="lead">A word in the system prompt keyword-matches a tool's name and overrides the descriptions — rephrase the system prompt.</span><span class="why">4 misses on this pattern (mock 3 Q30/Q57/Q60, mock 1 Q08). Tell: "after X, Y started happening" ⇒ X is the cause; "despite unchanged descriptions" removes descriptions as the cause. Every "fix the description" option is eliminated.</span>`},
+ a:`<span class="lead">A word in the system prompt keyword-matches a tool's name and overrides the descriptions — rephrase the system prompt.</span><span class="why">A recurring exam trap, tested several ways. Tell: "after X, Y started happening" ⇒ X is the cause; "despite unchanged descriptions" removes descriptions as the cause. Every "fix the description" option is eliminated.</span>`},
 {id:"d2-dialect",dom:"D2",tags:["repeat"],
  q:`An agent sends the wrong date/SQL/unit format to a specific system. Where does the guidance live?`,
  a:`<span class="lead">In that tool's DESCRIPTION.</span>Tool-specific dialect/format/syntax always goes in the description — never the system prompt.<span class="why">(mock 2 Q23.) Right-idea-wrong-layer: PostToolUse fixes results coming BACK, not inputs going OUT. An enum constrains the value but doesn't teach the per-system rule.</span>`},
 {id:"d2-access",dom:"D2",tags:["repeat"],
  q:`A tool returns <code>{data:[], status:"ok"}</code> when its API key expired; the agent says "no data found" and moves on. Root cause?`,
- a:`<span class="lead">The tool can't distinguish an access failure from a valid empty result — it must return <code>isError:true</code> with <code>errorCategory:"permission"</code>.</span>"Found nothing" ≠ "couldn't look."<span class="why">Cost marks 4× — highest-value item. A prompt rule ("treat empty as error") can't tell the two apart and breaks every real no-results case. You own the tool layer even when the vendor's flag lies.</span>`},
+ a:`<span class="lead">The tool can't distinguish an access failure from a valid empty result — it must return <code>isError:true</code> with <code>errorCategory:"permission"</code>.</span>"Found nothing" ≠ "couldn't look."<span class="why">One of the most frequently tested distinctions. A prompt rule ("treat empty as error") can't tell the two apart and breaks every real no-results case. You own the tool layer even when the vendor's flag lies.</span>`},
 {id:"d2-errcat",dom:"D2",tags:["repeat"],
  q:`A tool returns 503 (overload) and 404 (missing) identically; the agent burns its retry budget on 404s. Structural fix?`,
  a:`<span class="lead">A structured <code>errorCategory</code> ("transient" vs "business") + <code>isRetryable</code> boolean — in the response structure, not prose.</span><span class="why">(mock 2 Q31.) Tell: "change to the error response STRUCTURE" wants a field, not a status code buried in a message string. <code>isRetryable</code> answers "could retrying ever work?"</span>`},
@@ -307,7 +307,7 @@ const CARDS = [
  a:`<span class="lead">Expose the schema/catalogue as an MCP Resource.</span>Tools = what the agent can DO; Resources = what it can SEE (read-only), discovered automatically at connection time.<span class="why">(mock 2 Q41.) Trap 10: an option that "reduces" discovery calls but keeps a per-task lookup doesn't REMOVE the overhead the stem asked to remove. Resources are defined in the server's code, not a file you write.</span>`},
 {id:"d2-toolchoice",dom:"D2",tags:["repeat"],
  q:`<code>tool_choice</code>: force by name, or <code>"any"</code>?`,
- a:`<span class="lead">Do you already know which tool must be called? Yes → force by name. No (type varies, model must pick) → <code>"any"</code>.</span>Never redesign/merge the toolset to dodge the choice.<span class="why">3 misses, a different failure each time. Both guarantee structured output — they differ only in WHO picks the schema. Forcing by name when type varies welds every doc to one schema.</span>`},
+ a:`<span class="lead">Do you already know which tool must be called? Yes → force by name. No (type varies, model must pick) → <code>"any"</code>.</span>Never redesign/merge the toolset to dodge the choice.<span class="why">Tested several ways — a different failure mode each time. Both guarantee structured output — they differ only in WHO picks the schema. Forcing by name when type varies welds every doc to one schema.</span>`},
 {id:"d2-forcelock",dom:"D2",tags:["miss"],
  q:`A dev wants staging queries routed to the staging tool; they try forcing <code>tool_choice</code> to it. Why wrong, and what's right?`,
  a:`<span class="lead">Forcing one tool locks out ALL others (incl. legitimate production queries). Instead: rename the staging tool distinctly, put the environment in its description, add a scoped rule in <code>~/.claude.json</code>.</span><span class="why">(mock 3 Q56.) Forced <code>tool_choice</code> is a session-wide lock — only for "exactly one tool, every turn." Routing between similar tools = structural differentiation.</span>`},
@@ -357,7 +357,7 @@ const CARDS = [
  a:`<span class="lead">They CONCATENATE (all stacked), not a precedence chain — contradictions resolve arbitrarily. A rule that must always hold belongs in <code>settings.json</code> or a hook.</span><span class="why">(mock 2 Q45.) "More specific scope wins" / "user overrides project" are phrasings the docs never use — distractors. Placement still matters: who receives it, token cost, and unpredictable contradictions.</span>`},
 {id:"d3-scope",dom:"D3",tags:["repeat"],
  q:`Config scope: which prefix is team-shared vs personal, and how does the exam signal it?`,
- a:`<span class="lead"><code>.claude/</code> = in the repo = shared with the team. <code>~/.claude/</code> = home folder = only you.</span><span class="why">Cost marks 2×. The exam never says "project-scoped" — it describes the outcome: "every developer / on clone / the team" → <code>.claude/</code>; "personal / without affecting teammates / my own" → <code>~/.claude/</code>. Find that clause before reading the options. Read the <code>~</code> character by character.</span>`},
+ a:`<span class="lead"><code>.claude/</code> = in the repo = shared with the team. <code>~/.claude/</code> = home folder = only you.</span><span class="why">Frequently tested. The exam never says "project-scoped" — it describes the outcome: "every developer / on clone / the team" → <code>.claude/</code>; "personal / without affecting teammates / my own" → <code>~/.claude/</code>. Find that clause before reading the options. Read the <code>~</code> character by character.</span>`},
 {id:"d3-lint",dom:"D3",tags:["core"],
  q:`What is <b>linting</b>, and where does a team rule like "everyone runs lint before commit" live?`,
  a:`<span class="lead">A <b>linter</b> scans source code for stylistic errors, bugs, and security issues WITHOUT executing it ("lint" = poor/redundant code; "linting" = the automated scan). "Lint before commit" is a team standard → put it in the project-root <code>CLAUDE.md</code> (or <code>.claude/CLAUDE.md</code>), committed to git so it ships with every clone.</span><span class="why">Scope discriminator (d3-scope): "everyone / the team / on clone" → <code>.claude/</code> project scope — NOT <code>~/.claude/CLAUDE.md</code>, which is user-only and never reaches teammates. If the rule must hold EVERY time rather than just be suggested, CLAUDE.md only asks — a hook / <code>settings.json</code> enforces (d3-claudemd). And linting itself gates output but never teaches the model to generalise (d4-varied).</span>`},
@@ -406,7 +406,7 @@ const CARDS = [
 /* ═══════════ D4 — PROMPT ENGINEERING (20%) ═══════════ */
 {id:"d4-enforce",dom:"D4",tags:["repeat"],
  q:`The big decision: when do you fix a defect in CODE vs the PROMPT?`,
- a:`<span class="lead">If one failure causes financial loss, a security breach, or a compliance violation → programmatic enforcement (deterministic). Otherwise prompt guidance is proportionate.</span><span class="why">Cost marks 3×. A % failure rate in the stem means a probabilistic mechanism is already losing — a firmer prompt goes 12%→5%, never 0%. Reverse trap: building a gate for a style/latency problem is over-engineering.</span>`},
+ a:`<span class="lead">If one failure causes financial loss, a security breach, or a compliance violation → programmatic enforcement (deterministic). Otherwise prompt guidance is proportionate.</span><span class="why">Frequently tested. A % failure rate in the stem means a probabilistic mechanism is already losing — a firmer prompt goes 12%→5%, never 0%. Reverse trap: building a gate for a style/latency problem is over-engineering.</span>`},
 {id:"d4-boundary",dom:"D4",tags:["miss"],
  q:`A router handles clear cases well but misroutes ambiguous ones at type boundaries. Best few-shot fix?`,
  a:`<span class="lead">4–6 examples AT the boundary, each with the rationale for why one tool was chosen over plausible alternatives.</span>The rationale is what generalises to unseen cases.<span class="why">(practice Q60.) "Group examples by tool/type" teaches categories the model already knows. The failure is at the boundary, so the examples must sit on the boundary.</span>`},
@@ -418,7 +418,7 @@ const CARDS = [
  a:`<span class="lead">Keep the steps separate and validate the classification BETWEEN them (inter-step validation).</span><span class="why">A repeated concept (mock 1 Q02 = mock 2 Q49, identical). "More examples in step 2" only lowers the rate; whatever slips through still cascades. Damage happens at the boundary — fix the boundary. Beware "the team proposes X" planting the wrong idea.</span>`},
 {id:"d4-pydantic",dom:"D4",tags:["miss"],
  q:`A Pydantic model validates every field, yet <code>total</code> ≠ sum of <code>line_items</code> and no errors are raised. Fix?`,
- a:`<span class="lead">Add a cross-field validator: <code>@model_validator(mode="after")</code> comparing the fields.</span>Field validators check each field in isolation — they can't see a relationship between two fields, so each passes.<span class="why">(mock 2 Q28 — I tightened per-field constraints, which can never express a cross-field rule.) The specific error message it produces is the third ingredient of a good retry.</span>`},
+ a:`<span class="lead">Add a cross-field validator: <code>@model_validator(mode="after")</code> comparing the fields.</span>Field validators check each field in isolation — they can't see a relationship between two fields, so each passes.<span class="why">A tempting wrong answer tightens per-field constraints, which can never express a cross-field rule. The specific error message it produces is the third ingredient of a good retry.</span>`},
 {id:"d4-schemasem",dom:"D4",tags:["core"],
  q:`Does a JSON schema / <code>tool_use</code> guarantee a correct extraction?`,
  a:`<span class="lead">No — it kills SYNTAX errors (always a valid shape) but not SEMANTIC ones (wrong sums, misplaced values, invented data).</span><span class="why">Build the check in: extract <code>calculated_total</code> alongside <code>stated_total</code> and flag mismatches with a <code>conflict_detected</code> boolean, or run a Pydantic validator afterwards.</span>`},
@@ -456,7 +456,7 @@ const CARDS = [
 /* ═══════════ D5 — CONTEXT MANAGEMENT (15%) ═══════════ */
 {id:"d5-escalate",dom:"D5",tags:["repeat"],
  q:`What are the ONLY valid escalation triggers — and the invalid ones?`,
- a:`<span class="lead">Escalate on AUTHORITY: (1) explicit request for a human · (2) policy gap / ambiguity · (3) genuine inability to progress.</span><span class="why">Cost marks 3×+. Invalid: customer frustration/sentiment, transaction size ($4,200 is not a trigger), emotional difficulty, self-reported confidence scores. Tell for a policy gap: "is silent on" / "admits two valid readings."</span>`},
+ a:`<span class="lead">Escalate on AUTHORITY: (1) explicit request for a human · (2) policy gap / ambiguity · (3) genuine inability to progress.</span><span class="why">Frequently tested. Invalid: customer frustration/sentiment, transaction size ($4,200 is not a trigger), emotional difficulty, self-reported confidence scores. Tell for a policy gap: "is silent on" / "admits two valid readings."</span>`},
 {id:"d5-explicitreq",dom:"D5",tags:["miss"],
  q:`A customer says "just connect me to a real person" — but it's a simple 30-second password reset. Escalate?`,
  a:`<span class="lead">Escalate immediately. An explicit request for a human is mandatory — issue simplicity is irrelevant.</span><span class="why">(mock 3 Q41.) The agent has no authority to decide the customer doesn't need a human.</span>`},
@@ -579,7 +579,7 @@ const DOMAIN_NAMES = {D1:"Agentic Architecture",D2:"Tool Design & MCP",D3:"Claud
 const FILTERS = [
   {key:"all",label:"All"},
   {key:"repeat",label:"★ Repeats",star:true},
-  {key:"miss",label:"Misses",star:false},
+  {key:"miss",label:"Traps",star:false},
   {key:"D1",label:"D1"},{key:"D2",label:"D2"},{key:"D3",label:"D3"},
   {key:"D4",label:"D4"},{key:"D5",label:"D5"},
   {key:"REF",label:"Reference"},{key:"DRIFT",label:"Drift"},
@@ -621,7 +621,7 @@ function tagBadges(card){
   else if(card.dom==="DRIFT") label = "Drift";
   let h = '<span class="tag dom">'+label+'</span>';
   if(card.tags.includes("repeat")) h += '<span class="tag repeat">★ Repeat offender</span>';
-  else if(card.tags.includes("miss")) h += '<span class="tag miss">Documented miss</span>';
+  else if(card.tags.includes("miss")) h += '<span class="tag miss">Common trap</span>';
   else if(card.tags.includes("drift")) h += '<span class="tag drift">Exam ≠ current</span>';
   else if(card.tags.includes("ref")) h += '<span class="tag ref">Cheat sheet</span>';
   return h;
